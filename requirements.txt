@@ -3,3 +3,4 @@ numpy
 matplotlib
 # optional: running sweeps on Kaggle
 kaggle
+python-pptx  # optional: ppt/build_ppt.py

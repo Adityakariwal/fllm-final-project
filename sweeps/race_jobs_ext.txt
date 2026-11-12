@@ -1,0 +1,25 @@
+# Extension of the 1-layer width sweep to lambda=64,128 (lambda* lies above 32 for wide heads)
+dh4_lam64_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 64 --track_every 250 --seeds 0
+dh8_lam64_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 64 --track_every 250 --seeds 0
+dh16_lam64_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 64 --track_every 250 --seeds 0
+dh32_lam64_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 64 --track_every 250 --seeds 0
+dh64_lam64_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 64 --track_every 250 --seeds 0
+dh16_lam128_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 128 --track_every 250 --seeds 0
+dh32_lam128_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 128 --track_every 250 --seeds 0
+dh64_lam128_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 128 --track_every 250 --seeds 0
+dh4_lam64_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 64 --track_every 250 --seeds 1
+dh8_lam64_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 64 --track_every 250 --seeds 1
+dh16_lam64_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 64 --track_every 250 --seeds 1
+dh32_lam64_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 64 --track_every 250 --seeds 1
+dh64_lam64_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 64 --track_every 250 --seeds 1
+dh16_lam128_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 128 --track_every 250 --seeds 1
+dh32_lam128_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 128 --track_every 250 --seeds 1
+dh64_lam128_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 128 --track_every 250 --seeds 1
+dh4_lam64_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 64 --track_every 250 --seeds 2
+dh8_lam64_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 64 --track_every 250 --seeds 2
+dh16_lam64_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 64 --track_every 250 --seeds 2
+dh32_lam64_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 64 --track_every 250 --seeds 2
+dh64_lam64_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 64 --track_every 250 --seeds 2
+dh16_lam128_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 128 --track_every 250 --seeds 2
+dh32_lam128_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 128 --track_every 250 --seeds 2
+dh64_lam128_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 128 --track_every 250 --seeds 2

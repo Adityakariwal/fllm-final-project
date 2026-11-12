@@ -1,0 +1,204 @@
+fix_D8_scaled_dh16_s0: --D 8 --H 4 --lr 1e-4 --steps 80000 --attn gated --track_every 2000 --gate_kind scaled --seeds 0
+fix_D8_bilinear_dh16_s0: --D 8 --H 4 --lr 1e-4 --steps 80000 --attn gated --track_every 2000 --gate_kind bilinear --seeds 0
+fix_D8_scaled_dh16_s1: --D 8 --H 4 --lr 1e-4 --steps 80000 --attn gated --track_every 2000 --gate_kind scaled --seeds 1
+fix_D8_bilinear_dh16_s1: --D 8 --H 4 --lr 1e-4 --steps 80000 --attn gated --track_every 2000 --gate_kind bilinear --seeds 1
+fix_D8_scaled_dh16_s2: --D 8 --H 4 --lr 1e-4 --steps 80000 --attn gated --track_every 2000 --gate_kind scaled --seeds 2
+fix_D8_bilinear_dh16_s2: --D 8 --H 4 --lr 1e-4 --steps 80000 --attn gated --track_every 2000 --gate_kind bilinear --seeds 2
+fix_L4_scaled_dh4_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scaled --dh 4 --seeds 0
+fix_L4_scaled_dh16_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scaled --dh 16 --seeds 0
+fix_L4_scaled_dh64_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scaled --dh 64 --seeds 0
+fix_L4_bilinear_dh4_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind bilinear --dh 4 --seeds 0
+fix_L4_bilinear_dh16_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind bilinear --dh 16 --seeds 0
+fix_L4_bilinear_dh64_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind bilinear --dh 64 --seeds 0
+fix_L4_linear_lam1_dh4_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 4 --gate_lr_mult 1 --seeds 0
+fix_L4_linear_lam10_dh4_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 4 --gate_lr_mult 10 --seeds 0
+fix_L4_linear_lam1_dh64_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 64 --gate_lr_mult 1 --seeds 0
+fix_L4_linear_lam10_dh64_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 64 --gate_lr_mult 10 --seeds 0
+ctl_base_lam1_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000  --seeds 0
+ctl_lam10_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_lr_mult 10 --seeds 0
+ctl_lam10_qk10_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_lr_mult 10 --qk_lr_mult 10 --seeds 0
+ctl_lr1e-3_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --lr 1e-3 --seeds 0
+ctl_scalar_lam1_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scalar --seeds 0
+ctl_scalar_lam10_s0: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scalar --gate_lr_mult 10 --seeds 0
+fix_L4_scaled_dh4_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scaled --dh 4 --seeds 1
+fix_L4_scaled_dh16_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scaled --dh 16 --seeds 1
+fix_L4_scaled_dh64_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scaled --dh 64 --seeds 1
+fix_L4_bilinear_dh4_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind bilinear --dh 4 --seeds 1
+fix_L4_bilinear_dh16_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind bilinear --dh 16 --seeds 1
+fix_L4_bilinear_dh64_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind bilinear --dh 64 --seeds 1
+fix_L4_linear_lam1_dh4_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 4 --gate_lr_mult 1 --seeds 1
+fix_L4_linear_lam10_dh4_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 4 --gate_lr_mult 10 --seeds 1
+fix_L4_linear_lam1_dh64_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 64 --gate_lr_mult 1 --seeds 1
+fix_L4_linear_lam10_dh64_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 64 --gate_lr_mult 10 --seeds 1
+ctl_base_lam1_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000  --seeds 1
+ctl_lam10_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_lr_mult 10 --seeds 1
+ctl_lam10_qk10_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_lr_mult 10 --qk_lr_mult 10 --seeds 1
+ctl_lr1e-3_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --lr 1e-3 --seeds 1
+ctl_scalar_lam1_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scalar --seeds 1
+ctl_scalar_lam10_s1: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scalar --gate_lr_mult 10 --seeds 1
+fix_L4_scaled_dh4_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scaled --dh 4 --seeds 2
+fix_L4_scaled_dh16_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scaled --dh 16 --seeds 2
+fix_L4_scaled_dh64_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scaled --dh 64 --seeds 2
+fix_L4_bilinear_dh4_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind bilinear --dh 4 --seeds 2
+fix_L4_bilinear_dh16_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind bilinear --dh 16 --seeds 2
+fix_L4_bilinear_dh64_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind bilinear --dh 64 --seeds 2
+fix_L4_linear_lam1_dh4_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 4 --gate_lr_mult 1 --seeds 2
+fix_L4_linear_lam10_dh4_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 4 --gate_lr_mult 10 --seeds 2
+fix_L4_linear_lam1_dh64_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 64 --gate_lr_mult 1 --seeds 2
+fix_L4_linear_lam10_dh64_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --dh 64 --gate_lr_mult 10 --seeds 2
+ctl_base_lam1_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000  --seeds 2
+ctl_lam10_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_lr_mult 10 --seeds 2
+ctl_lam10_qk10_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_lr_mult 10 --qk_lr_mult 10 --seeds 2
+ctl_lr1e-3_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --lr 1e-3 --seeds 2
+ctl_scalar_lam1_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scalar --seeds 2
+ctl_scalar_lam10_s2: --D 4 --H 4 --lr 1e-4 --attn gated --track_every 1000 --gate_kind scalar --gate_lr_mult 10 --seeds 2
+lr3e-5_lam1_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 1 --track_every 250 --seeds 0
+lr3e-5_lam2_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 2 --track_every 250 --seeds 0
+lr3e-5_lam4_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 4 --track_every 250 --seeds 0
+lr3e-5_lam8_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 8 --track_every 250 --seeds 0
+lr3e-5_lam16_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 16 --track_every 250 --seeds 0
+lr3e-5_lam32_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 32 --track_every 250 --seeds 0
+lr3e-4_lam1_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 1 --track_every 250 --seeds 0
+lr3e-4_lam2_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 2 --track_every 250 --seeds 0
+lr3e-4_lam4_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 4 --track_every 250 --seeds 0
+lr3e-4_lam8_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 8 --track_every 250 --seeds 0
+lr3e-4_lam16_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 16 --track_every 250 --seeds 0
+lr3e-4_lam32_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 32 --track_every 250 --seeds 0
+dh4_lam1_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 1 --track_every 250 --seeds 0
+dh4_lam2_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 2 --track_every 250 --seeds 0
+dh4_lam4_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 4 --track_every 250 --seeds 0
+dh4_lam8_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 8 --track_every 250 --seeds 0
+dh4_lam16_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 16 --track_every 250 --seeds 0
+dh4_lam32_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 32 --track_every 250 --seeds 0
+dh8_lam1_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 1 --track_every 250 --seeds 0
+dh8_lam2_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 2 --track_every 250 --seeds 0
+dh8_lam4_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 4 --track_every 250 --seeds 0
+dh8_lam8_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 8 --track_every 250 --seeds 0
+dh8_lam16_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 16 --track_every 250 --seeds 0
+dh8_lam32_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 32 --track_every 250 --seeds 0
+dh16_lam1_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 1 --track_every 250 --seeds 0
+dh16_lam2_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 2 --track_every 250 --seeds 0
+dh16_lam4_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 4 --track_every 250 --seeds 0
+dh16_lam8_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 8 --track_every 250 --seeds 0
+dh16_lam16_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 16 --track_every 250 --seeds 0
+dh16_lam32_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 32 --track_every 250 --seeds 0
+dh32_lam1_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 1 --track_every 250 --seeds 0
+dh32_lam2_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 2 --track_every 250 --seeds 0
+dh32_lam4_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 4 --track_every 250 --seeds 0
+dh32_lam8_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 8 --track_every 250 --seeds 0
+dh32_lam16_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 16 --track_every 250 --seeds 0
+dh32_lam32_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 32 --track_every 250 --seeds 0
+dh64_lam1_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 1 --track_every 250 --seeds 0
+dh64_lam2_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 2 --track_every 250 --seeds 0
+dh64_lam4_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 4 --track_every 250 --seeds 0
+dh64_lam8_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 8 --track_every 250 --seeds 0
+dh64_lam16_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 16 --track_every 250 --seeds 0
+dh64_lam32_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 32 --track_every 250 --seeds 0
+fix_D1_scaled_dh4_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind scaled --dh 4 --track_every 250 --seeds 0
+fix_D1_scaled_dh16_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind scaled --dh 16 --track_every 250 --seeds 0
+fix_D1_scaled_dh64_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind scaled --dh 64 --track_every 250 --seeds 0
+fix_D1_bilinear_dh4_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind bilinear --dh 4 --track_every 250 --seeds 0
+fix_D1_bilinear_dh16_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind bilinear --dh 16 --track_every 250 --seeds 0
+fix_D1_bilinear_dh64_s0: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind bilinear --dh 64 --track_every 250 --seeds 0
+pos_nobos_1L1H_s0: --D 1 --H 1 --lr 1e-3 --steps 20000 --no_bos --pos_emb --attn softmax gated --seeds 0
+pos_nobos_2L2H_s0: --D 2 --H 2 --lr 1e-4 --no_bos --pos_emb --attn softmax --seeds 0
+lr3e-5_lam1_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 1 --track_every 250 --seeds 1
+lr3e-5_lam2_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 2 --track_every 250 --seeds 1
+lr3e-5_lam4_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 4 --track_every 250 --seeds 1
+lr3e-5_lam8_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 8 --track_every 250 --seeds 1
+lr3e-5_lam16_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 16 --track_every 250 --seeds 1
+lr3e-5_lam32_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 32 --track_every 250 --seeds 1
+lr3e-4_lam1_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 1 --track_every 250 --seeds 1
+lr3e-4_lam2_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 2 --track_every 250 --seeds 1
+lr3e-4_lam4_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 4 --track_every 250 --seeds 1
+lr3e-4_lam8_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 8 --track_every 250 --seeds 1
+lr3e-4_lam16_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 16 --track_every 250 --seeds 1
+lr3e-4_lam32_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 32 --track_every 250 --seeds 1
+dh4_lam1_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 1 --track_every 250 --seeds 1
+dh4_lam2_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 2 --track_every 250 --seeds 1
+dh4_lam4_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 4 --track_every 250 --seeds 1
+dh4_lam8_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 8 --track_every 250 --seeds 1
+dh4_lam16_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 16 --track_every 250 --seeds 1
+dh4_lam32_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 32 --track_every 250 --seeds 1
+dh8_lam1_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 1 --track_every 250 --seeds 1
+dh8_lam2_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 2 --track_every 250 --seeds 1
+dh8_lam4_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 4 --track_every 250 --seeds 1
+dh8_lam8_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 8 --track_every 250 --seeds 1
+dh8_lam16_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 16 --track_every 250 --seeds 1
+dh8_lam32_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 32 --track_every 250 --seeds 1
+dh16_lam1_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 1 --track_every 250 --seeds 1
+dh16_lam2_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 2 --track_every 250 --seeds 1
+dh16_lam4_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 4 --track_every 250 --seeds 1
+dh16_lam8_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 8 --track_every 250 --seeds 1
+dh16_lam16_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 16 --track_every 250 --seeds 1
+dh16_lam32_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 32 --track_every 250 --seeds 1
+dh32_lam1_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 1 --track_every 250 --seeds 1
+dh32_lam2_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 2 --track_every 250 --seeds 1
+dh32_lam4_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 4 --track_every 250 --seeds 1
+dh32_lam8_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 8 --track_every 250 --seeds 1
+dh32_lam16_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 16 --track_every 250 --seeds 1
+dh32_lam32_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 32 --track_every 250 --seeds 1
+dh64_lam1_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 1 --track_every 250 --seeds 1
+dh64_lam2_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 2 --track_every 250 --seeds 1
+dh64_lam4_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 4 --track_every 250 --seeds 1
+dh64_lam8_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 8 --track_every 250 --seeds 1
+dh64_lam16_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 16 --track_every 250 --seeds 1
+dh64_lam32_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 32 --track_every 250 --seeds 1
+fix_D1_scaled_dh4_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind scaled --dh 4 --track_every 250 --seeds 1
+fix_D1_scaled_dh16_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind scaled --dh 16 --track_every 250 --seeds 1
+fix_D1_scaled_dh64_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind scaled --dh 64 --track_every 250 --seeds 1
+fix_D1_bilinear_dh4_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind bilinear --dh 4 --track_every 250 --seeds 1
+fix_D1_bilinear_dh16_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind bilinear --dh 16 --track_every 250 --seeds 1
+fix_D1_bilinear_dh64_s1: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind bilinear --dh 64 --track_every 250 --seeds 1
+pos_nobos_1L1H_s1: --D 1 --H 1 --lr 1e-3 --steps 20000 --no_bos --pos_emb --attn softmax gated --seeds 1
+pos_nobos_2L2H_s1: --D 2 --H 2 --lr 1e-4 --no_bos --pos_emb --attn softmax --seeds 1
+lr3e-5_lam1_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 1 --track_every 250 --seeds 2
+lr3e-5_lam2_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 2 --track_every 250 --seeds 2
+lr3e-5_lam4_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 4 --track_every 250 --seeds 2
+lr3e-5_lam8_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 8 --track_every 250 --seeds 2
+lr3e-5_lam16_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 16 --track_every 250 --seeds 2
+lr3e-5_lam32_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-5 --steps 100000 --gate_lr_mult 32 --track_every 250 --seeds 2
+lr3e-4_lam1_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 1 --track_every 250 --seeds 2
+lr3e-4_lam2_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 2 --track_every 250 --seeds 2
+lr3e-4_lam4_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 4 --track_every 250 --seeds 2
+lr3e-4_lam8_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 8 --track_every 250 --seeds 2
+lr3e-4_lam16_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 16 --track_every 250 --seeds 2
+lr3e-4_lam32_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --lr 3e-4 --steps 100000 --gate_lr_mult 32 --track_every 250 --seeds 2
+dh4_lam1_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 1 --track_every 250 --seeds 2
+dh4_lam2_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 2 --track_every 250 --seeds 2
+dh4_lam4_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 4 --track_every 250 --seeds 2
+dh4_lam8_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 8 --track_every 250 --seeds 2
+dh4_lam16_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 16 --track_every 250 --seeds 2
+dh4_lam32_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 4 --gate_lr_mult 32 --track_every 250 --seeds 2
+dh8_lam1_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 1 --track_every 250 --seeds 2
+dh8_lam2_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 2 --track_every 250 --seeds 2
+dh8_lam4_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 4 --track_every 250 --seeds 2
+dh8_lam8_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 8 --track_every 250 --seeds 2
+dh8_lam16_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 16 --track_every 250 --seeds 2
+dh8_lam32_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 8 --gate_lr_mult 32 --track_every 250 --seeds 2
+dh16_lam1_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 1 --track_every 250 --seeds 2
+dh16_lam2_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 2 --track_every 250 --seeds 2
+dh16_lam4_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 4 --track_every 250 --seeds 2
+dh16_lam8_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 8 --track_every 250 --seeds 2
+dh16_lam16_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 16 --track_every 250 --seeds 2
+dh16_lam32_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 16 --gate_lr_mult 32 --track_every 250 --seeds 2
+dh32_lam1_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 1 --track_every 250 --seeds 2
+dh32_lam2_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 2 --track_every 250 --seeds 2
+dh32_lam4_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 4 --track_every 250 --seeds 2
+dh32_lam8_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 8 --track_every 250 --seeds 2
+dh32_lam16_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 16 --track_every 250 --seeds 2
+dh32_lam32_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 32 --gate_lr_mult 32 --track_every 250 --seeds 2
+dh64_lam1_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 1 --track_every 250 --seeds 2
+dh64_lam2_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 2 --track_every 250 --seeds 2
+dh64_lam4_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 4 --track_every 250 --seeds 2
+dh64_lam8_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 8 --track_every 250 --seeds 2
+dh64_lam16_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 16 --track_every 250 --seeds 2
+dh64_lam32_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --dh 64 --gate_lr_mult 32 --track_every 250 --seeds 2
+fix_D1_scaled_dh4_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind scaled --dh 4 --track_every 250 --seeds 2
+fix_D1_scaled_dh16_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind scaled --dh 16 --track_every 250 --seeds 2
+fix_D1_scaled_dh64_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind scaled --dh 64 --track_every 250 --seeds 2
+fix_D1_bilinear_dh4_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind bilinear --dh 4 --track_every 250 --seeds 2
+fix_D1_bilinear_dh16_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind bilinear --dh 16 --track_every 250 --seeds 2
+fix_D1_bilinear_dh64_s2: --D 1 --H 4 --lr 1e-4 --residual 1 --attn gated --gate_kind bilinear --dh 64 --track_every 250 --seeds 2
+pos_nobos_1L1H_s2: --D 1 --H 1 --lr 1e-3 --steps 20000 --no_bos --pos_emb --attn softmax gated --seeds 2
+pos_nobos_2L2H_s2: --D 2 --H 2 --lr 1e-4 --no_bos --pos_emb --attn softmax --seeds 2

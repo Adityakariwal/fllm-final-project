@@ -1,0 +1,5 @@
+# Real-model SGD check (momentum 0.9, lr 30: the only lr in {1,10,30} that converges within 6k steps)
+sgd_lr30_lam1_s0: --D 1 --H 4 --residual 1 --attn gated --opt sgd --lr 30 --track_every 250 --seeds 0
+sgd_lr30_lam1_s1: --D 1 --H 4 --residual 1 --attn gated --opt sgd --lr 30 --track_every 250 --seeds 1
+sgd_lr30_lam1_s2: --D 1 --H 4 --residual 1 --attn gated --opt sgd --lr 30 --track_every 250 --seeds 2
+sgd_lr30_softmax_s0: --D 1 --H 4 --residual 1 --attn softmax --opt sgd --lr 30 --seeds 0

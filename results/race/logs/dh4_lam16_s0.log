@@ -1,0 +1,1 @@
+[gated    s0] steps=10205 train_linf=0.0050 test_linf=0.003 maxBOS=0.59 bos=[0.59 0.57 0.58 0.58] gate(off/trig)=[0.00/1.00 0.00/1.00 0.00/0.99 0.00/0.99] 79s

@@ -1,0 +1,6 @@
+# LM run 2: conditions that favour sink formation -- packed random-offset chunks, 2.5x longer, higher lr.
+# 6L, d=384, 6 heads of 64, ctx 256, batch 64, 20k steps, lr 2e-3 (warmup 500). One seed, 2 jobs per T4.
+lm2_softmax_s0:      lm.py --attn softmax --sample random --steps 20000 --lr 2e-3 --warmup 500 --eval_every 1000 --seed 0
+lm2_gated_lam1_s0:   lm.py --attn gated --sample random --steps 20000 --lr 2e-3 --warmup 500 --eval_every 1000 --seed 0
+lm2_gated_lam10_s0:  lm.py --attn gated --gate_lr_mult 10 --sample random --steps 20000 --lr 2e-3 --warmup 500 --eval_every 1000 --seed 0
+lm2_softmax1_s0:     lm.py --attn softmax1 --sample random --steps 20000 --lr 2e-3 --warmup 500 --eval_every 1000 --seed 0

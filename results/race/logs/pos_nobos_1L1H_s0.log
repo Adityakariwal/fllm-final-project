@@ -1,0 +1,2 @@
+[softmax  s0] steps=20000 train_linf=0.8609 test_linf=0.710 maxBOS=0.16 bos=[0.16] 104s
+[gated    s0] steps= 3739 train_linf=0.0048 test_linf=0.005 maxBOS=0.16 bos=[0.16] gate(off/trig)=[0.00/0.54] 21s
