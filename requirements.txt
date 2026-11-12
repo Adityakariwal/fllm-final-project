@@ -4,3 +4,4 @@ matplotlib
 # optional: running sweeps on Kaggle
 kaggle
 python-pptx  # optional: ppt/build_ppt.py
+pygments     # optional: syntax colouring in ppt/build_ppt.py

@@ -42,6 +42,7 @@ sweeps/
   race_jobs*.txt    the race sweeps of Sec. 7-8 (lambda x d_head, base lr, controls, gate designs, SGD)
 ppt/
   build_ppt.py      builds G28_presentation.pptx from the course template
+  export_pdf.sh     exports it to G28_presentation.pdf with Microsoft PowerPoint (WSL -> Windows)
 kaggle/
   build_kernel.py   bundles src/ + a job list into one Kaggle script kernel (2x T4)
   jobs_*.txt        the job lists that were run on Kaggle
