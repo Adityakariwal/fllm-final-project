@@ -1,0 +1,9 @@
+# Exp 3: no BOS token. 2L2H and 4L4H, all variants, 5 seeds
+noBOS2L2H_softmax:  --D 2 --H 2 --lr 1e-4 --steps 50000 --no_bos --seeds 0 1 2 3 4 --attn softmax --track_every 1000
+noBOS2L2H_softmax1: --D 2 --H 2 --lr 1e-4 --steps 50000 --no_bos --seeds 0 1 2 3 4 --attn softmax1 --track_every 1000
+noBOS2L2H_gated:    --D 2 --H 2 --lr 1e-4 --steps 50000 --no_bos --seeds 0 1 2 3 4 --attn gated --track_every 1000
+noBOS2L2H_relu:     --D 2 --H 2 --lr 1e-4 --steps 50000 --no_bos --seeds 0 1 2 3 4 --attn relu sigmoidn
+noBOS4L4H_softmax:  --D 4 --H 4 --lr 1e-4 --steps 50000 --no_bos --seeds 0 1 2 3 4 --attn softmax --track_every 1000
+noBOS4L4H_softmax1: --D 4 --H 4 --lr 1e-4 --steps 50000 --no_bos --seeds 0 1 2 3 4 --attn softmax1 --track_every 1000
+noBOS4L4H_gated:    --D 4 --H 4 --lr 1e-4 --steps 50000 --no_bos --seeds 0 1 2 3 4 --attn gated --track_every 1000
+noBOS4L4H_relu:     --D 4 --H 4 --lr 1e-4 --steps 50000 --no_bos --seeds 0 1 2 3 4 --attn relu sigmoidn

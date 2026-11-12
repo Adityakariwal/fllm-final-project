@@ -1,0 +1,12 @@
+# Exp 1: gate init sweep (4L4H gated; bias 0 already in phase 1). initial gate = sigmoid(bias)
+G4L4Hbm4_gated: --D 4 --H 4 --lr 1e-4 --seeds 0 1 2 3 4 --attn gated --gate_bias -4 --track_every 500
+G4L4Hbm2_gated: --D 4 --H 4 --lr 1e-4 --seeds 0 1 2 3 4 --attn gated --gate_bias -2 --track_every 500
+G4L4Hbp2_gated: --D 4 --H 4 --lr 1e-4 --seeds 0 1 2 3 4 --attn gated --gate_bias 2 --track_every 500
+G4L4Hbp4_gated: --D 4 --H 4 --lr 1e-4 --seeds 0 1 2 3 4 --attn gated --gate_bias 4 --track_every 500
+# Exp 2: depth sweep, H=4, residual, deep end
+D6H4_softmax:  --D 6 --H 4 --lr 1e-4 --steps 80000 --seeds 0 1 2 3 4 --attn softmax --track_every 1000
+D6H4_softmax1: --D 6 --H 4 --lr 1e-4 --steps 80000 --seeds 0 1 2 3 4 --attn softmax1 --track_every 1000
+D6H4_gated:    --D 6 --H 4 --lr 1e-4 --steps 80000 --seeds 0 1 2 3 4 --attn gated --track_every 1000
+D8H4_softmax:  --D 8 --H 4 --lr 1e-4 --steps 80000 --seeds 0 1 2 3 4 --attn softmax --track_every 1000
+D8H4_softmax1: --D 8 --H 4 --lr 1e-4 --steps 80000 --seeds 0 1 2 3 4 --attn softmax1 --track_every 1000
+D8H4_gated:    --D 8 --H 4 --lr 1e-4 --steps 80000 --seeds 0 1 2 3 4 --attn gated --track_every 1000

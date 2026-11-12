@@ -1,0 +1,474 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2025_conference,times}
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage[capitalize,noabbrev]{cleveref}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\newcommand{\bos}{\textsc{bos}}
+\newcommand{\sm}{\mathrm{softmax}}
+
+\title{Necessary, but Also Preferred: \\ Why Attention Sinks Form Even When\\ Transformers Can Switch Off}
+
+\author{Aditya Kariwal, Manish Kundu \& Samyak Sheersh \\
+Group G28 --- Foundations of Large Language Models (End-Term Project)
+}
+
+\iclrfinalcopy
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\citet{ranmilo2026sinks} recently proved that softmax attention \emph{must} form an attention sink
+to implement a trigger-conditional ``no-op'', and suggested that explicit gating or non-normalised
+attention is the right way to obtain sink-free models. We test this suggestion in the paper's own
+controlled setting. We re-implement the task, reproduce its results, and add three attention
+mechanisms that have an explicit ``off'' switch: softmax-off-by-one, a query-dependent output gate,
+and sigmoid attention. We first construct explicit sink-free solutions for gated and off-by-one attention,
+showing that for them a sink is \emph{not} necessary. We then show, over more than 300 training runs, that
+gradient-based training forms sinks anyway: gated attention puts $\geq 0.95$ of its attention on the
+\bos{} token at every depth from 1 to 8 layers, even when the gate is initialised almost closed; off-by-one
+attention only moves mass into its null slot as depth grows. Removing the \bos{} token flips the picture:
+both mechanisms then learn to use their switch, while softmax fails. Gradient probes show that the loss
+pulls \emph{harder} towards closing the gate than towards the sink, yet the sink wins. We explain this as a
+\emph{speed race}: the sink is a product of two learnable factors ($q^\top k$) and grows self-reinforcingly,
+while the gate is linear in its weights. Consistent with this, raising only the gate's learning rate by
+$10\times$ removes all sinks in a 4-layer model and makes training $5\times$ faster.
+\end{abstract}
+
+\section{Introduction}
+Large language models put a disproportionate share of attention on the first token, a phenomenon called
+the \emph{attention sink} \citep{xiao2024streamingllm}. Sinks are linked to massive activations
+\citep{sun2024massive}, complicate quantisation \citep{bondarenko2023quantizable}, and matter for
+long-context inference. A common explanation is that a head sometimes has nothing useful to read; since
+softmax weights must sum to one, the head ``parks'' its attention on a token whose value contributes
+nothing \citep{miller2023off,gu2025when,guo2024active}.
+
+\citet{ranmilo2026sinks} made this precise. On a \emph{trigger-conditional} task, where a head must average
+the past only when a trigger token appears and output zero otherwise, they prove that any low-loss softmax
+model must put almost all attention on \bos{} at non-trigger positions, while ReLU attention solves the same
+task without a sink. Their practical conclusion (Sec.~5) is that removing sinks requires changing how ``off''
+states are represented, ``via non-normalized attention, explicit gating'', and they assume, citing
+\citet{qiu2025gated}, that sinks do not appear in gated attention.
+
+\textbf{This project asks whether that suggestion holds.} If a model \emph{can} switch a head off without a
+sink, does training actually use that ability? We study this in the exact setting of the original paper,
+where everything can be measured and controlled.
+
+\textbf{Contributions.} Beyond reproducing the original results with our own implementation, we:
+\begin{enumerate}
+  \item add three attention variants with an explicit off switch (softmax-off-by-one, gated softmax,
+        sigmoid) and give \textbf{explicit sink-free zero-loss constructions} for gated and off-by-one
+        attention (\cref{sec:constructions}), so for them a sink is provably \emph{not} necessary;
+  \item show that \textbf{training nevertheless chooses the sink}: across depths 1--8, gate initialisations
+        from $0.02$ to $0.98$ and 5 seeds each, gated attention keeps full sinks and never uses its gate
+        as a switch; off-by-one attention only drifts towards its null slot in deep models
+        (\cref{sec:learned});
+  \item show that \textbf{without a \bos{} token} both mechanisms do learn to switch off, while softmax
+        fails and forms \emph{no} substitute anchor, contrary to a prediction in the original paper;
+  \item identify the \textbf{mechanism} (\cref{sec:race}): gradient probes show the loss favours closing the
+        gate early in training, yet the bilinear sink grows faster; and confirm it by \textbf{intervention}:
+        a $10\times$ larger learning rate on the gate parameters alone removes all sinks and speeds up training
+        $5\times$.
+\end{enumerate}
+
+\section{Background and related work}
+\textbf{Attention sinks.} \citet{xiao2024streamingllm} showed that keeping the first tokens in the KV cache is
+essential for streaming inference. \citet{gu2025when} studied when sinks emerge during pre-training, finding
+that they appear after effective optimisation, are weaker with small learning rates, and disappear with
+un-normalised sigmoid attention. \citet{sun2024massive} linked sinks to massive activations, and
+\citet{guo2024active} explained them with active--dormant heads. \citet{varre2026polarizes} show that
+gradient flow on value$\times$softmax models drives outputs to low-entropy solutions, a formal route to sinks.
+
+\textbf{Sinks are necessary for softmax.} \citet{ranmilo2026sinks} prove that on trigger-conditional tasks
+softmax attention needs a sink (single-layer, Thm.~1; at least one layer of a deep model, Thm.~2),
+while ReLU attention admits a sink-free solution (Thm.~3). Their theorems extend to any attention whose
+weights are normalised ($\sum_k \alpha_{ik}\ge c>0$) and monotone; the variants we add below violate exactly
+these conditions.
+
+\textbf{Mechanisms that can switch off.} Softmax-off-by-one adds a constant $1$ to the softmax
+denominator, letting rows sum to less than one \citep{miller2023off}. \citet{bondarenko2023quantizable}
+proposed clipped softmax and gated attention to help heads ``do nothing''. \citet{qiu2025gated} add a
+head-specific sigmoid gate after attention and report strongly reduced sinks in LLMs trained on 3.5T
+tokens. Sigmoid attention \citep{ramapuram2025sigmoid} removes normalisation altogether.
+
+\textbf{Closest work.} Two very recent preprints are directly relevant. \citet{rizwan2026new} report that
+gating did \emph{not} remove sinks in small, short-trained language models, and speculate that the gate
+``never learned to be sparse'', but do not test why. \citet{wang2026abstention} find that a gate depending
+only on the value leaves the sink in place while a query-controlled mechanism removes it. Our study gives a
+controlled explanation of the first observation (a speed race, \cref{sec:race}) and refines the second:
+our gate \emph{is} query-dependent and still loses to the sink at default learning rates.
+
+\section{Setup}
+\label{sec:setup}
+\textbf{Task.} We follow \citet{ranmilo2026sinks} and their released code exactly. A sequence has $L=16$
+tokens $x^{(0)},\dots,x^{(15)}\in\mathbb{R}^{16}$. Position $0$ is \bos{} (indicator $e_\text{bos}$, zero
+content). One position $j\in\{2,\dots,15\}$ is the trigger ($e_\text{trig}$); all others are content tokens
+($e_\text{cont}$). Every non-\bos{} token carries 13 i.i.d.\ $\mathcal{U}(-1,1)$ content features. The
+target is the mean of $x^{(1)},\dots,x^{(j)}$ at the trigger and zero elsewhere (multi-layer models predict
+this on top of the residual stream). There is no positional encoding.
+
+\textbf{Models.} Attention-only transformers with $D$ layers of $H$ heads, each head of width $d=16$, causal
+masking, residual connections for $D>1$, and no MLP or LayerNorm, as in the original paper.
+With $s_{ik}=q_i^\top k_k$, the head output is $W_O\big(g_i\odot\sum_{k\le i}\alpha_{ik}v_k\big)$ with
+$g_i\equiv 1$ unless gated, and
+\begin{align*}
+\text{softmax: }\; & \alpha_{ik}=\tfrac{e^{s_{ik}}}{\sum_{k'\le i}e^{s_{ik'}}}, &
+\text{off-by-one: }\; & \alpha_{ik}=\tfrac{e^{s_{ik}}}{1+\sum_{k'\le i}e^{s_{ik'}}},\\
+\text{gated: }\; & \text{softmax with } g_i=\sigma(W_G x_i+b_G), &
+\text{ReLU: }\; & \alpha_{ik}=\mathrm{ReLU}(s_{ik})/i,\\
+\text{sigmoid: }\; & \alpha_{ik}=\sigma(s_{ik}-\log L), &
+\text{sigmoid-n: }\; & \alpha_{ik}=\sigma(s_{ik})/i.
+\end{align*}
+The gate is elementwise and head-specific and is computed from the query token, as in \citet{qiu2025gated}.
+``Sigmoid-n'' uses the same $1/i$ length scaling as the paper's ReLU.
+
+\textbf{Training.} Adam \citep{kingma2015adam} with $\beta=(0.9,0.95)$, batch 128, learning rate $10^{-3}$
+(1 layer, no residual) or $10^{-4}$ (residual models), weights $\mathcal{N}(0,0.02^2)$, gate bias $0$
+unless stated. As in the reference code, training stops when the $\ell_\infty$ error on a batch falls
+below $5\times10^{-3}$ (the paper's text says $10^{-2}$) or after 50k steps (80k for 6--8 layers).
+Every configuration is run with 5 seeds.
+
+\textbf{Metrics.} Following the paper, we evaluate on 1000 sequences with the trigger at position 8 and
+measure, per head, the attention mass on \bos{} averaged over \emph{non-trigger} rows ($i\ge1$, $i\neq j$).
+A head is a \emph{sink head} if this exceeds $0.6$. For off-by-one we also report the
+\emph{null-slot mass} $1-\sum_k\alpha_{ik}$, and for gated attention the mean gate value on non-trigger
+rows and on the trigger row.
+
+\section{Reproduction}
+\label{sec:repro}
+\Cref{fig:repro} and \cref{tab:main} reproduce the paper: softmax forms a perfect sink in every seed and
+ReLU never does. All 90 runs converge except un-normalised sigmoid, which cannot compute an average at
+1--2 layers and only succeeds once a 4-layer residual stack can compensate. Sigmoid-n solves the task
+without a sink at every depth, consistent with \citet{gu2025when}. At 4 layers, sinks appear in some heads but
+not all (37/80 heads over 5 seeds), matching the existential form of the paper's Theorem~2.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_repro.pdf}
+\caption{Mean attention of a trained single-layer, single-head model (trigger at position 8, 1000 test
+sequences, seed 0). Softmax, off-by-one and gated attention all park non-trigger rows on \bos{} (column 1);
+ReLU switches off instead.}
+\label{fig:repro}
+\end{figure}
+
+\begin{table}[t]
+\caption{Phase-1 results (5 seeds each). ``Max BOS'': largest per-head \bos{} mass on non-trigger rows,
+mean $\pm$ std over seeds. ``Sink heads'': heads with \bos{} mass $>0.6$, summed over seeds. $D$L$H$H: $D$ layers, $H$ heads.}
+\label{tab:main}
+\centering
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{llccccc}
+\toprule
+Model & Attention & Conv. & Steps & Max BOS & Sink heads & Gate off / trig. \\
+\midrule
+\multirow{6}{*}{1L1H} & softmax & 5/5 & 905 & $1.00\pm.00$ & 5/5 & -- \\
+ & off-by-one & 5/5 & 911 & $1.00\pm.00$ & 5/5 & -- \\
+ & gated & 5/5 & 1002 & $1.00\pm.00$ & 5/5 & 0.51 / 0.79 \\
+ & ReLU & 5/5 & 692 & $0.00\pm.00$ & 0/5 & -- \\
+ & sigmoid & 0/5 & -- & -- & -- & -- \\
+ & sigmoid-n & 5/5 & 831 & $0.18\pm.03$ & 0/5 & -- \\
+\midrule
+\multirow{4}{*}{2L2H} & softmax & 5/5 & 10509 & $1.00\pm.00$ & 20/20 & -- \\
+ & off-by-one & 5/5 & 8921 & $1.00\pm.00$ & 20/20 & -- \\
+ & gated & 5/5 & 9794 & $1.00\pm.00$ & 20/20 & 0.45 / 0.66 \\
+ & ReLU / sigmoid-n & 5/5 & -- & $0.00$ / $0.13$ & 0/20 & -- \\
+\midrule
+\multirow{4}{*}{4L4H} & softmax & 5/5 & 22379 & $1.00\pm.00$ & 37/80 & -- \\
+ & off-by-one & 5/5 & 18155 & $0.89\pm.10$ & 40/80 & -- \\
+ & gated & 5/5 & 16816 & $0.99\pm.01$ & 38/80 & 0.47 / 0.59 \\
+ & ReLU / sigmoid-n & 5/5 & -- & $0.00$ / $0.16$ & 0/80 & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{A sink is not necessary when the head can switch off}
+\label{sec:constructions}
+The proofs of \citet{ranmilo2026sinks} rely on the head's output being a normalised average of values.
+Gating multiplies that average by a query-dependent factor, and off-by-one lets the weights sum to less than
+one, so neither is covered. We show both admit sink-free solutions, in the spirit of the paper's ReLU
+construction (Thm.~3). Let $W_K=W_V=W_O=I$ and write the score as $s_{ik}=x_i^\top B\,x_k$.
+
+\begin{proposition}[Gated attention]
+\label{prop:gated}
+Let $B=-c\,(e_\text{trig}+e_\text{cont})e_\text{bos}^\top$ and $g_i=\sigma\!\big(a\,(x_i[\text{trig}]-x_i[\text{cont}]-x_i[\text{bos}])\big)\mathbf{1}$.
+Then every non-\bos{} query gives score $-c$ to \bos{} and $0$ to all other keys, so
+$\alpha_{i,\bos}=e^{-c}/(e^{-c}+i)\le e^{-c}$ at \emph{every} row. The gate equals $\sigma(a)$ at the trigger and
+$\sigma(-a)$ elsewhere. Since inputs are bounded, the maximum error over all inputs is $O(e^{-a}+e^{-c})$.
+Hence for any $\varepsilon>0$ there are weights with loss $\le\varepsilon$ and \bos{} mass $\le\varepsilon$ at all
+non-trigger rows.
+\end{proposition}
+
+\begin{proposition}[Softmax-off-by-one]
+\label{prop:off}
+Let $B=m\big[e_\text{trig}(e_\text{trig}+e_\text{cont}-e_\text{bos})^\top-(e_\text{bos}+e_\text{cont})(e_\text{bos}+e_\text{trig}+e_\text{cont})^\top\big]$.
+The trigger query scores $+m$ on every non-\bos{} key and $-m$ on \bos{}, so its weights tend to the uniform
+average over positions $1..j$. Every other query scores $-m$ on all keys, so its total mass is
+$\le i\,e^{-m}$ and it outputs $\approx0$ through the null slot. Again the error is $O(L e^{-m})$ and the
+\bos{} mass vanishes.
+\end{proposition}
+
+\Cref{tab:constr} evaluates both constructions numerically on 2000 random sequences. Already at scale 10,
+well within the range reached by trained weights, both reach an error far below the training threshold with
+essentially zero \bos{} attention. Notably, the gated solution uses a \emph{query-independent} attention
+pattern and puts all of the conditional behaviour into the gate.
+
+\begin{table}[t]
+\caption{Explicit sink-free solutions (\cref{prop:gated,prop:off}) evaluated on 2000 sequences.
+The training stopping threshold is $\ell_\infty<5\times10^{-3}$.}
+\label{tab:constr}
+\centering
+\small
+\begin{tabular}{rcccccccc}
+\toprule
+ & \multicolumn{3}{c}{Gated} & & \multicolumn{4}{c}{Softmax-off-by-one} \\
+\cmidrule{2-4}\cmidrule{6-9}
+Scale & MSE & $\ell_\infty$ & BOS mass & & MSE & $\ell_\infty$ & BOS mass & Row mass \\
+\midrule
+2  & $1.5\!\times\!10^{-3}$ & 0.174 & $2.9\!\times\!10^{-2}$ & & $1.8\!\times\!10^{-2}$ & 0.625 & $6.6\!\times\!10^{-2}$ & 0.51 \\
+5  & $5.2\!\times\!10^{-6}$ & 0.010 & $1.5\!\times\!10^{-3}$ & & $2.3\!\times\!10^{-4}$ & 0.086 & $6.4\!\times\!10^{-3}$ & 0.056 \\
+10 & $2.4\!\times\!10^{-10}$ & $10^{-4}$ & $1.0\!\times\!10^{-5}$ & & $1.2\!\times\!10^{-8}$ & $6\!\times\!10^{-4}$ & $4.5\!\times\!10^{-5}$ & $4\!\times\!10^{-4}$ \\
+20 & $\approx0$ & $\approx0$ & $4.6\!\times\!10^{-10}$ & & $\approx0$ & $\approx0$ & $2.1\!\times\!10^{-9}$ & $2\!\times\!10^{-8}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{\dots{} but training learns the sink anyway}
+\label{sec:learned}
+\textbf{Gated attention always sinks.} Despite \cref{prop:gated}, every trained gated model in
+\cref{tab:main} parks non-trigger rows on \bos{}. The gate barely moves from its initial value of $0.5$:
+it ends at about $0.45$--$0.5$ on non-trigger rows and $0.6$--$0.8$ on the trigger row, a mild modulation
+rather than a switch. The sink does the switching.
+
+\textbf{Initialising the gate closed makes it worse.} One might expect a gate that starts nearly closed to be
+used as a switch. \Cref{fig:gateinit} shows the opposite. With the gate initialised at
+$\sigma(-4)=0.02$ or $\sigma(-2)=0.12$, \emph{all} 80/80 heads become sinks (vs.\ 38/80 at $0.5$), and in
+every setting the final gate stays close to where it started (e.g.\ $0.02\to0.02/0.05$ off/trigger).
+The model rescales $W_V,W_O$ around a frozen gate and still builds a sink.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{figures/fig_gateinit.pdf}
+\caption{Gated attention, 4 layers $\times$ 4 heads, 5 seeds per bar. (a) A nearly closed initial gate turns
+every head into a sink. (b) The trained gate stays near its initialisation (dotted) instead of becoming an
+on/off switch.}
+\label{fig:gateinit}
+\end{figure}
+
+\textbf{Depth.} \Cref{fig:depth} sweeps depth from 1 to 8 layers with 4 heads per layer. Softmax and gated
+attention keep sinks at every depth (a declining fraction of heads is needed as depth grows, but sink heads
+always have \bos{} mass $\ge0.95$). Off-by-one behaves differently: at 1--2 layers it is indistinguishable
+from softmax, but with depth its sinks fade (7/160 sink heads at 8 layers) and mass moves into the null slot.
+Within the heads that remain sinks, the null-slot share grows from $0.02$ (1--2 layers) to $0.11$, $0.19$,
+$0.32$ and $0.33$ (3, 4, 6, 8 layers).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{figures/fig_depth.pdf}
+\caption{Depth sweep (4 heads per layer, 5 seeds; band/bars: $\pm1$ std). (a) Fraction of sink heads.
+(b) For off-by-one, attention mass on \bos{} vs.\ the null slot, averaged over all heads.}
+\label{fig:depth}
+\end{figure}
+
+\textbf{Removing the \bos{} token.} If training prefers the sink only because a convenient anchor exists, it
+should use the off switch once the anchor is gone. We drop \bos{}: every position is an ordinary content
+token, and there is no positional information at all. \Cref{tab:nobos} confirms the prediction. Softmax
+cannot solve the task at any depth (0/15 runs), off-by-one and gated attention always do, and the gated
+model now uses a genuine switch (gate $0.02$ off vs.\ $0.62$ on at one layer). Softmax also forms
+\emph{no} substitute anchor (no head puts more than $0.2$ on any single key). This contradicts the
+expectation of \citet[Sec.~5]{ranmilo2026sinks} that suppressing the sink makes an anchor ``reappear
+elsewhere''. In our setting no other token can be singled out without positional information, so this
+result may not hold for models with positional encodings.
+
+\begin{table}[t]
+\caption{Training without a \bos{} token (5 seeds per cell). ``Mass'': mean total attention
+$\sum_k\alpha_{ik}$ on non-trigger rows (1 for softmax and gated by construction).}
+\label{tab:nobos}
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Attention & 1 layer, 1 head & 2 layers, 2 heads & 4 layers, 4 heads \\
+\midrule
+softmax & 0/5 ($\ell_\infty=0.74$) & 0/5 ($0.70$) & 0/5 ($0.08$) \\
+off-by-one & 5/5, mass $0.00$ & 5/5, mass $0.42$ & 5/5, mass $0.57$ \\
+gated & 5/5, gate $0.02$ / $0.62$ & 5/5, gate $0.28$ / $0.63$ & 5/5, gate $0.41$ / $0.64$ \\
+ReLU, sigmoid-n & 5/5 & 5/5 & 5/5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Why the sink wins: a speed race}
+\label{sec:race}
+\textbf{Timelines.} \Cref{fig:timelines} tracks every head during training. Sinks appear abruptly, with an
+S-shaped rise between roughly steps 2k and 5k, and never reverse in softmax and gated models. The gate stays
+flat throughout, including when it starts nearly closed. In deep off-by-one models, sinks form \emph{first}
+and are then slowly replaced by null-slot mass.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_timelines.pdf}
+\caption{Training timelines (seed 0, 4 layers $\times$ 4 heads unless noted). Top: \bos{} mass per head
+(blue: heads that end as sinks). Bottom: the head's off mechanism, i.e.\ gate value (green) or null-slot
+mass (orange).}
+\label{fig:timelines}
+\end{figure}
+
+\textbf{The loss prefers the gate.} To ask which route the loss ``wants'', we add two zero-valued probe
+scalars per head, active only on non-trigger rows: $p_\text{sink}$ is added to the \bos{} attention logit and
+$p_\text{gate}$ to the gate pre-activation. They leave the forward pass unchanged; their gradients measure
+how much the loss would decrease per unit logit change along each route. Both act on logits, so they are
+directly comparable. \Cref{fig:probe} (single-layer gated model, 3 seeds) shows that during the decisive phase
+the pull towards closing the gate is \emph{larger} than the pull towards the sink (peak $6.2\times10^{-4}$ vs.\
+$3.9\times10^{-4}$). Yet \bos{} mass rises from $0.16$ to $1.0$ while the gate moves from $0.50$ to $0.45$.
+The outcome is therefore decided by how fast each route can move, not by which route the loss prefers.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{figures/fig_probe.pdf}
+\caption{Gradient probes in a 1-layer gated model (mean $\pm$ std over 3 seeds). (a) The loss pulls harder on
+closing the gate than on the sink. (b) The sink nonetheless forms and the gate stays near $0.5$.}
+\label{fig:probe}
+\end{figure}
+
+\textbf{Explanation.} The sink logit on row $i$ is $(W_Qx_i)^\top(W_Kx_\text{bos})$, a product of two learned
+factors. As in deep linear networks \citep{saxe2014exact}, such products start slowly from a small
+initialisation and then grow faster the larger they get, which produces the sigmoidal escape seen in
+\cref{fig:timelines}. The gate pre-activation $W_Gx_i+b_G$ is linear in its parameters, and only one input
+feature (the token-type indicator) separates trigger from non-trigger rows, so with Adam it moves at a
+roughly constant rate. Once the sink has absorbed the error, the gradient on the gate vanishes and the gate
+stays where it is. A similar implicit bias of softmax parameterisations towards low-entropy solutions was
+analysed by \citet{varre2026polarizes}.
+
+\textbf{Intervention: speed up only the gate.} If the outcome is a race, giving the gate a head start should
+change the winner. We multiply the learning rate of the gate parameters $(W_G,b_G)$ by $\lambda$ and leave
+everything else unchanged (\cref{fig:gatelr}, \cref{tab:glr}). As $\lambda$ grows, the gate turns into a
+switch and the sink disappears. At 4 layers, $\lambda=10$ already removes \emph{every} sink (0/80 heads,
+\bos{} mass at the uniform level). It also cuts training time from 16.8k to 3.3k steps, and $\lambda=100$
+cuts it to 2.1k. At 1 layer, $\lambda=10$ gives a perfect switch \emph{and} a sink, and the sink weakens
+only for $\lambda\ge30$. The sink is thus not merely an alternative solution but a slower one, and training
+locks into it because it gets there first.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_gatelr.pdf}
+\caption{Raising only the gate's learning rate (5 seeds per point). (a) Sinks vanish. (b) Training gets
+faster. (c) At 4 layers the gate separates trigger from non-trigger rows.}
+\label{fig:gatelr}
+\end{figure}
+
+\begin{table}[t]
+\caption{Gate learning-rate multiplier $\lambda$ (gated attention, 5 seeds each, all converged).}
+\label{tab:glr}
+\centering
+\small
+\begin{tabular}{rcccccc}
+\toprule
+ & \multicolumn{3}{c}{1 layer, 1 head} & \multicolumn{3}{c}{4 layers, 4 heads} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+$\lambda$ & BOS mass & Gate off/trig. & Steps & Sink heads & Gate off/trig. & Steps \\
+\midrule
+1   & 1.00 & 0.50 / 0.78 & 1004 & 38/80 & 0.47 / 0.59 & 16816 \\
+3   & 1.00 & 0.33 / 0.93 & 885  & 25/80 & 0.33 / 0.61 & 8161 \\
+10  & 0.99 & 0.01 / 0.99 & 807  & 0/80  & 0.22 / 0.68 & 3315 \\
+30  & 0.84 & 0.00 / 1.00 & 894  & 0/80  & 0.12 / 0.77 & 2484 \\
+100 & 0.39 & 0.00 / 1.00 & 915  & 0/80  & 0.12 / 0.81 & 2130 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Discussion}
+\textbf{Implications for the original paper.} \citet{ranmilo2026sinks} show what softmax \emph{needs}; we
+show what training \emph{prefers}. Adding an off switch makes the sink unnecessary but does not by itself make
+models sink-free, because gradient descent finds the sink first. Changing how off states are represented is
+therefore not sufficient on its own; the off mechanism must also be learnable at least as fast as the sink.
+In our setting a per-parameter-group learning rate is enough to achieve that.
+
+\textbf{Relation to gated LLMs.} \citet{qiu2025gated} observe far fewer sinks with gating at scale, while
+\citet{rizwan2026new} do not at small scale. A race explains both: whether the gate wins depends on the relative
+speed of the two routes, which is affected by width (the sink logit is a sum over $d_\text{head}$ products),
+normalisation layers, initialisation, learning rate and training length. All of these differ between the two
+studies. Our results suggest checking gate statistics early in training and tuning the gate's learning rate
+when sink-free behaviour is desired.
+
+\textbf{Limitations.} All experiments use the synthetic task and attention-only models of the original paper:
+no MLPs, LayerNorm or positional encoding, sequence length 16 and width 16. The constructions are existence
+results, not a characterisation of all solutions. The speed-race account is supported by probes and an
+intervention, but we give no formal dynamics theorem. Whether a faster gate removes sinks in language models
+trained on real text is the most important open question. Some numbers differ slightly between CPU and GPU
+runs of the same seed, so we report means over 5 seeds throughout.
+
+\section{Conclusion}
+Attention sinks are necessary for softmax, but they are also \emph{preferred} by training whenever a stable
+anchor exists, even in architectures that could do without them. In a controlled setting we showed that gated
+and off-by-one attention admit sink-free solutions, yet gradient descent reliably builds sinks in them because
+the bilinear sink outruns the gate. Removing the anchor, adding depth, or simply letting the gate learn faster
+shifts the balance, and in the last case it also speeds up training several-fold.
+
+\paragraph{Code.} All code, configurations and raw results are available at
+\url{https://github.com/REPLACE-WITH-REPO-URL}. Every number and figure can be regenerated with
+\texttt{reproduce.sh}.
+
+\bibliography{references}
+\bibliographystyle{iclr2025_conference}
+
+\appendix
+\section{Implementation details}
+\label{app:impl}
+\textbf{Code.} We re-implemented the task and models from scratch in PyTorch, following the released
+reference code of \citet{ranmilo2026sinks} for data generation, initialisation, optimiser and stopping
+rule. Differences from the reference: batched data generation on the device, additional attention variants,
+probes and tracking. The reference stopping threshold ($5\times10^{-3}$, from the code) is used throughout.
+
+\textbf{Hyper-parameters.} $d=16$, $L=16$, batch 128, Adam $(0.9,0.95)$, no weight decay, initialisation
+$\mathcal{N}(0,0.02^2)$ for all weights, gate bias $0$ unless stated. Learning rate $10^{-3}$ for
+single-layer non-residual models (\cref{tab:main} top block, gate-LR 1-layer sweep, probes) and $10^{-4}$
+otherwise. The depth sweep uses residual models with 4 heads for all depths, including $D=1$. Maximum steps:
+50k (80k for 6 and 8 layers); the no-\bos{} 1-layer sweep was capped at 20k steps.
+
+\textbf{No-\bos{} variant.} Position $0$ becomes a content token, the trigger is sampled from
+$\{1,\dots,15\}$, and the target averages positions $0..j$. ReLU and sigmoid-n divide by the number of
+non-\bos{} keys, which is $i+1$ without \bos{} instead of $i$.
+
+\textbf{Probes.} Every 25 steps we draw 512 fresh sequences, add zero scalars $p_\text{sink}$ (to the
+\bos{} logit) and $p_\text{gate}$ (to the gate pre-activation, all coordinates) on non-trigger rows of each
+head, and record $-\partial L/\partial p_\text{sink}$ and $\partial L/\partial p_\text{gate}$. Probes are
+removed before the optimisation step, so training is unaffected.
+
+\textbf{Compute.} Single-layer and shallow sweeps ran on a laptop CPU; deeper sweeps ran on Kaggle
+($2\times$ NVIDIA T4). In total we trained 312 models (plus 3 probe runs); the longest single run (8 layers, on a shared
+T4) took about 25 minutes.
+
+\section{Additional results}
+\textbf{Sink heads by depth} (5 seeds, 4 heads per layer, sink head: \bos{} mass $>0.6$):
+\begin{center}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+Layers & 1 & 2 & 3 & 4 & 6 & 8 \\
+\midrule
+softmax & 19/20 & 24/40 & 29/60 & 37/80 & 43/120 & 62/160 \\
+off-by-one & 20/20 & 26/40 & 36/60 & 40/80 & 26/120 & 7/160 \\
+\quad null-slot share in sink heads & 0.02 & 0.02 & 0.11 & 0.19 & 0.32 & 0.33 \\
+gated & 20/20 & 40/40 & 47/60 & 38/80 & 50/120 & 58/160 \\
+\quad gate off / trig. & .42/.66 & .43/.62 & .45/.60 & .47/.59 & .47/.57 & .48/.56 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Gate initialisation} (4 layers $\times$ 4 heads, 5 seeds): initial gate $0.02$: 80/80 sink heads,
+final gate $0.02/0.05$; $0.12$: 80/80, $0.11/0.22$; $0.50$: 38/80, $0.47/0.59$; $0.88$: 39/80,
+$0.86/0.90$; $0.98$: 38/80, $0.98/0.98$ (off/trigger).
+
+\end{document}

@@ -1,0 +1,5 @@
+[gated    s0] steps= 7117 train_linf=0.0049 test_linf=0.006 maxBOS=1.00 bos=[0.99 1.00 1.00 1.00] gate(off/trig)=[0.38/0.60 0.42/0.67 0.42/0.66 0.44/0.69] 62s
+[gated    s1] steps= 7065 train_linf=0.0049 test_linf=0.005 maxBOS=1.00 bos=[1.00 1.00 1.00 1.00] gate(off/trig)=[0.42/0.66 0.43/0.67 0.42/0.66 0.42/0.65] 62s
+[gated    s2] steps= 7286 train_linf=0.0050 test_linf=0.006 maxBOS=1.00 bos=[1.00 1.00 1.00 1.00] gate(off/trig)=[0.38/0.62 0.45/0.69 0.39/0.63 0.43/0.68] 86s
+[gated    s3] steps= 6972 train_linf=0.0049 test_linf=0.007 maxBOS=1.00 bos=[1.00 1.00 1.00 1.00] gate(off/trig)=[0.42/0.67 0.43/0.68 0.41/0.66 0.40/0.64] 75s
+[gated    s4] steps= 7414 train_linf=0.0050 test_linf=0.008 maxBOS=1.00 bos=[1.00 1.00 1.00 1.00] gate(off/trig)=[0.41/0.64 0.40/0.64 0.45/0.70 0.41/0.66] 71s

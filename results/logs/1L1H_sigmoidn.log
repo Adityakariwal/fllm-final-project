@@ -1,0 +1,5 @@
+[sigmoidn s0] steps=  843 train_linf=0.0048 test_linf=0.005 maxBOS=0.15 bos=[0.15] 2s
+[sigmoidn s1] steps=  787 train_linf=0.0045 test_linf=0.003 maxBOS=0.20 bos=[0.20] 1s
+[sigmoidn s2] steps=  827 train_linf=0.0045 test_linf=0.005 maxBOS=0.20 bos=[0.20] 1s
+[sigmoidn s3] steps=  883 train_linf=0.0023 test_linf=0.003 maxBOS=0.14 bos=[0.14] 1s
+[sigmoidn s4] steps=  815 train_linf=0.0040 test_linf=0.003 maxBOS=0.19 bos=[0.19] 1s

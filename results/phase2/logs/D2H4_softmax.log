@@ -1,0 +1,5 @@
+[softmax  s0] steps=15343 train_linf=0.0050 test_linf=0.004 maxBOS=1.00 bos=[1.00 1.00 0.16 0.16 0.99 0.14 1.00 1.00] 240s
+[softmax  s1] steps= 9567 train_linf=0.0050 test_linf=0.006 maxBOS=1.00 bos=[1.00 1.00 0.16 0.16 1.00 1.00 1.00 0.15] 144s
+[softmax  s2] steps=13576 train_linf=0.0050 test_linf=0.005 maxBOS=1.00 bos=[0.19 0.18 1.00 0.20 1.00 1.00 0.20 1.00] 197s
+[softmax  s3] steps=13889 train_linf=0.0050 test_linf=0.003 maxBOS=1.00 bos=[1.00 1.00 0.22 1.00 0.20 0.99 0.20 0.21] 172s
+[softmax  s4] steps=14765 train_linf=0.0049 test_linf=0.006 maxBOS=1.00 bos=[1.00 1.00 0.34 1.00 0.99 1.00 0.99 0.30] 128s

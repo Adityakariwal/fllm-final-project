@@ -1,0 +1,5 @@
+[relu     s0] steps=  770 train_linf=0.0041 test_linf=0.005 maxBOS=0.00 bos=[0.00] 3s
+[relu     s1] steps=  744 train_linf=0.0048 test_linf=0.005 maxBOS=0.00 bos=[0.00] 2s
+[relu     s2] steps=  770 train_linf=0.0048 test_linf=0.004 maxBOS=0.00 bos=[0.00] 2s
+[relu     s3] steps=  688 train_linf=0.0044 test_linf=0.005 maxBOS=0.00 bos=[0.00] 3s
+[relu     s4] steps=  709 train_linf=0.0044 test_linf=0.005 maxBOS=0.00 bos=[0.00] 2s

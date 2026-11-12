@@ -1,0 +1,7 @@
+# tag: args for src/run.py   (paper Fig. 6-8 setting, 5 seeds, all attention variants)
+4L4H_softmax:  --D 4 --H 4 --lr 1e-4 --seeds 0 1 2 3 4 --attn softmax
+4L4H_relu:     --D 4 --H 4 --lr 1e-4 --seeds 0 1 2 3 4 --attn relu
+4L4H_softmax1: --D 4 --H 4 --lr 1e-4 --seeds 0 1 2 3 4 --attn softmax1
+4L4H_sigmoid:  --D 4 --H 4 --lr 1e-4 --seeds 0 1 2 3 4 --attn sigmoid
+4L4H_sigmoidn: --D 4 --H 4 --lr 1e-4 --seeds 0 1 2 3 4 --attn sigmoidn
+4L4H_gated:    --D 4 --H 4 --lr 1e-4 --seeds 0 1 2 3 4 --attn gated

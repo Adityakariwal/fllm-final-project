@@ -1,0 +1,5 @@
+[sigmoid  s0] steps=50000 train_linf=0.6627 test_linf=0.206 maxBOS=0.00 bos=[0.00] 68s
+[sigmoid  s1] steps=50000 train_linf=0.6327 test_linf=0.204 maxBOS=0.00 bos=[0.00] 73s
+[sigmoid  s2] steps=50000 train_linf=0.6295 test_linf=0.208 maxBOS=0.00 bos=[0.00] 69s
+[sigmoid  s3] steps=50000 train_linf=0.6382 test_linf=0.209 maxBOS=0.00 bos=[0.00] 48s
+[sigmoid  s4] steps=50000 train_linf=0.6219 test_linf=0.182 maxBOS=0.00 bos=[0.00] 45s

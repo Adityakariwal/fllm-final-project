@@ -1,0 +1,10 @@
+[relu     s0] steps=13445 train_linf=0.0046 test_linf=0.005 maxBOS=0.00 bos=[0.00 0.00 0.00 0.00] 236s
+[relu     s1] steps=14264 train_linf=0.0043 test_linf=0.004 maxBOS=0.00 bos=[0.00 0.00 0.00 0.00] 230s
+[relu     s2] steps=11199 train_linf=0.0044 test_linf=0.005 maxBOS=0.00 bos=[0.00 0.00 0.00 0.00] 181s
+[relu     s3] steps=14317 train_linf=0.0049 test_linf=0.005 maxBOS=0.00 bos=[0.00 0.00 0.00 0.00] 227s
+[relu     s4] steps=12832 train_linf=0.0048 test_linf=0.005 maxBOS=0.00 bos=[0.00 0.00 0.00 0.00] 204s
+[sigmoidn s0] steps=19653 train_linf=0.0048 test_linf=0.004 maxBOS=0.00 bos=[0.00 0.00 0.00 0.00] 263s
+[sigmoidn s1] steps=19430 train_linf=0.0042 test_linf=0.004 maxBOS=0.00 bos=[0.00 0.00 0.00 0.00] 247s
+[sigmoidn s2] steps=18573 train_linf=0.0050 test_linf=0.005 maxBOS=0.00 bos=[0.00 0.00 0.00 0.00] 240s
+[sigmoidn s3] steps=23772 train_linf=0.0047 test_linf=0.006 maxBOS=0.00 bos=[0.00 0.00 0.00 0.00] 285s
+[sigmoidn s4] steps=20736 train_linf=0.0047 test_linf=0.005 maxBOS=0.00 bos=[0.00 0.00 0.00 0.00] 231s

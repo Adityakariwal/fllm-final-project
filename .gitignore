@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+# raw Kaggle downloads (results are copied into results/) and generated kernels
+kaggle/out/
+kaggle/build/
+# LaTeX intermediates
+report/*.aux
+report/*.log
+report/*.bbl
+report/*.blg
+report/*.out
