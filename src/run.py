@@ -37,6 +37,12 @@ def main():
     p.add_argument("--track_every", type=int, default=0, help="log per-head stats every k steps")
     p.add_argument("--no_bos", action="store_true", help="drop the BOS token (Exp 3)")
     p.add_argument("--gate_lr_mult", type=float, default=1.0, help="LR multiplier for W_G only")
+    p.add_argument("--qk_lr_mult", type=float, default=1.0, help="LR multiplier for W_Q, W_K only")
+    p.add_argument("--opt", default="adam", choices=["adam", "sgd"])
+    p.add_argument("--dh", type=int, default=None, help="head width (default: d)")
+    p.add_argument("--gate_kind", default="linear", choices=["linear", "scalar", "scaled", "bilinear"])
+    p.add_argument("--gate_scale", type=float, default=2.5, help="scaled gate: kappa = gate_scale*sqrt(dh)")
+    p.add_argument("--pos_emb", action="store_true", help="learned positional embedding on Q/K inputs")
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     p.add_argument("--out", required=True)
     a = p.parse_args()
@@ -47,14 +53,18 @@ def main():
         for seed in a.seeds:
             torch.manual_seed(seed)
             res = None if a.residual is None else bool(a.residual)
-            m = Model(a.d, a.H, a.D, t, residual=res, gate_bias=a.gate_bias,
-                      bos=not a.no_bos).to(a.device)
+            m = Model(a.d, a.H, a.D, t, residual=res, gate_bias=a.gate_bias, bos=not a.no_bos,
+                      dh=a.dh, gate_kind=a.gate_kind, gate_scale=a.gate_scale, pos_emb=a.pos_emb,
+                      max_len=a.L).to(a.device)
             t0 = time.time()
             tr = train(m, a.d, a.L, a.lr, a.steps, stop=a.stop, seed=seed, device=a.device,
-                       track_every=a.track_every, gate_lr_mult=a.gate_lr_mult)
+                       track_every=a.track_every, gate_lr_mult=a.gate_lr_mult,
+                       qk_lr_mult=a.qk_lr_mult, opt=a.opt)
             st, test_linf = sink_stats(m, a.d, a.L, device=a.device)
             results.append(dict(attn=t, seed=seed, D=a.D, H=a.H, secs=time.time() - t0,
                                 test_linf=test_linf, gate_bias=a.gate_bias, gate_lr_mult=a.gate_lr_mult,
+                                qk_lr_mult=a.qk_lr_mult, opt=a.opt, dh=a.dh or a.d, gate_kind=a.gate_kind,
+                                pos_emb=a.pos_emb, lr=a.lr,
                                 residual=m.residual, bos=m.bos,
                                 **{k: v for k, v in tr.items() if k != "hist"}, heads=st))
             bos = [h["bos_mass"] for h in st]

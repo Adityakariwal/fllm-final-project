@@ -1,0 +1,18 @@
+256006 train / 10304 valid stories, vocab 92, train tokens 65,536,788
+step     0 val 4.527 sinkfrac 0.00 meanBOS 0.02 massive 8 gate 0.50 15s
+step   500 val 0.882 sinkfrac 0.00 meanBOS 0.02 massive 9 gate 0.55 383s
+step  1000 val 0.635 sinkfrac 0.00 meanBOS 0.02 massive 22 gate 0.54 768s
+step  1500 val 0.568 sinkfrac 0.00 meanBOS 0.02 massive 37 gate 0.53 1154s
+step  2000 val 0.530 sinkfrac 0.00 meanBOS 0.02 massive 46 gate 0.53 1539s
+step  2500 val 0.504 sinkfrac 0.00 meanBOS 0.02 massive 54 gate 0.52 1925s
+step  3000 val 0.487 sinkfrac 0.00 meanBOS 0.01 massive 63 gate 0.52 2309s
+step  3500 val 0.471 sinkfrac 0.00 meanBOS 0.01 massive 67 gate 0.52 2694s
+step  4000 val 0.456 sinkfrac 0.00 meanBOS 0.01 massive 69 gate 0.52 3079s
+step  4500 val 0.446 sinkfrac 0.00 meanBOS 0.02 massive 75 gate 0.52 3465s
+step  5000 val 0.435 sinkfrac 0.00 meanBOS 0.02 massive 65 gate 0.52 3851s
+step  5500 val 0.426 sinkfrac 0.00 meanBOS 0.02 massive 70 gate 0.52 4236s
+step  6000 val 0.417 sinkfrac 0.00 meanBOS 0.02 massive 71 gate 0.52 4622s
+step  6500 val 0.411 sinkfrac 0.00 meanBOS 0.02 massive 69 gate 0.52 5007s
+step  7000 val 0.405 sinkfrac 0.00 meanBOS 0.02 massive 74 gate 0.52 5393s
+step  7500 val 0.401 sinkfrac 0.00 meanBOS 0.02 massive 68 gate 0.52 5703s
+step  8000 val 0.399 sinkfrac 0.00 meanBOS 0.02 massive 71 gate 0.52 5934s

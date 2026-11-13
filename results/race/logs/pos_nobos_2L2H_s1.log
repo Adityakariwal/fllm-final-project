@@ -1,0 +1,1 @@
+[softmax  s1] steps=50000 train_linf=0.8438 test_linf=0.646 maxBOS=0.17 bos=[0.11 0.11 0.17 0.17] 578s

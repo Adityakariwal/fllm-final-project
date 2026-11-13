@@ -74,6 +74,23 @@ experiments() {
     $RUN --D 4 --H 4 --lr 1e-4 --attn gated --gate_lr_mult $m --seeds $SEEDS --track_every 500 \
          --out results/phase2/glr${m}_4L4H_gated.json
   done
+  $PY src/probe.py --D 1 --H 1 --lr 1e-3 --every 25 --gate_lr_mult 10 --out results/phase2/probe_1L1H_lam10.json
+
+  # --- Sec. 8: race theory (closed form + minimal-model simulation) ---------------------
+  $PY src/race_theory.py --out results/theory/race_sim.json
+
+  # --- Sec. 8-9: race sweeps (lambda* vs head width / lr, controls, race-matched gate,
+  #     no-BOS + positional embedding). One run per line, run in parallel on local cores.
+  sweeps/run_local.sh sweeps/race_jobs.txt results/race "$(($(nproc) - 1))"
+  sweeps/run_local.sh sweeps/race_jobs_sgd.txt results/race 1
+
+  # --- Sec. 10: small language model (TinyStories, Kaggle 2xT4) --------------------------
+  #   python kaggle/build_kernel.py --slug sinks-race-lm --jobs-file kaggle/jobs_lm.txt --user <you>
+  #   kaggle kernels push -p kaggle/build/sinks-race-lm --accelerator NvidiaTeslaT4
+  #   kaggle kernels output <you>/sinks-race-lm -p kaggle/out/sinks-race-lm   # -> copy results/ to results/lm
+  #   run 2 (packed chunks, 20k steps): same with --slug sinks-race-lm2 --jobs-file kaggle/jobs_lm2.txt
+  # or locally on a GPU, e.g.:
+  #   $PY src/lm.py --attn gated --gate_kind scaled --seed 0 --out results/lm/lm_gated_scaled_s0.json
 }
 
 figures() {

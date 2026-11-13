@@ -1,0 +1,11 @@
+# Small char-level GPT on TinyStories (6L, d=384, 6 heads of 64, ctx 256, 8k steps), 2 seeds.
+lm_softmax_s0:       lm.py --attn softmax --seed 0
+lm_softmax1_s0:      lm.py --attn softmax1 --seed 0
+lm_gated_lam1_s0:    lm.py --attn gated --seed 0
+lm_gated_lam10_s0:   lm.py --attn gated --gate_lr_mult 10 --seed 0
+lm_gated_scaled_s0:  lm.py --attn gated --gate_kind scaled --seed 0
+lm_softmax_s1:       lm.py --attn softmax --seed 1
+lm_softmax1_s1:      lm.py --attn softmax1 --seed 1
+lm_gated_lam1_s1:    lm.py --attn gated --seed 1
+lm_gated_lam10_s1:   lm.py --attn gated --gate_lr_mult 10 --seed 1
+lm_gated_scaled_s1:  lm.py --attn gated --gate_kind scaled --seed 1

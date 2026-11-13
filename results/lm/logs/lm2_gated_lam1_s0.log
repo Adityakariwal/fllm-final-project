@@ -1,0 +1,22 @@
+256006 train / 10304 valid stories, vocab 92, train tokens 205,942,255, sample=random
+step     0 val 4.521 sinkfrac 0.00 anchorfrac 0.00 meanBOS 0.02 massive 8 gate 0.50 6s
+step  1000 val 0.806 sinkfrac 0.00 anchorfrac 0.72 meanBOS 0.01 massive 34 gate 0.33 305s
+step  2000 val 0.693 sinkfrac 0.00 anchorfrac 0.72 meanBOS 0.02 massive 58 gate 0.30 613s
+step  3000 val 0.653 sinkfrac 0.00 anchorfrac 0.69 meanBOS 0.02 massive 70 gate 0.28 920s
+step  4000 val 0.629 sinkfrac 0.00 anchorfrac 0.69 meanBOS 0.02 massive 74 gate 0.27 1227s
+step  5000 val 0.613 sinkfrac 0.00 anchorfrac 0.69 meanBOS 0.02 massive 75 gate 0.27 1534s
+step  6000 val 0.599 sinkfrac 0.00 anchorfrac 0.69 meanBOS 0.02 massive 73 gate 0.26 1841s
+step  7000 val 0.591 sinkfrac 0.00 anchorfrac 0.69 meanBOS 0.02 massive 70 gate 0.26 2148s
+step  8000 val 0.581 sinkfrac 0.00 anchorfrac 0.64 meanBOS 0.02 massive 71 gate 0.26 2455s
+step  9000 val 0.571 sinkfrac 0.00 anchorfrac 0.69 meanBOS 0.02 massive 69 gate 0.25 2762s
+step 10000 val 0.562 sinkfrac 0.00 anchorfrac 0.58 meanBOS 0.02 massive 67 gate 0.25 3071s
+step 11000 val 0.556 sinkfrac 0.00 anchorfrac 0.64 meanBOS 0.02 massive 65 gate 0.25 3378s
+step 12000 val 0.547 sinkfrac 0.00 anchorfrac 0.61 meanBOS 0.02 massive 63 gate 0.26 3686s
+step 13000 val 0.541 sinkfrac 0.00 anchorfrac 0.58 meanBOS 0.02 massive 62 gate 0.26 3993s
+step 14000 val 0.533 sinkfrac 0.00 anchorfrac 0.53 meanBOS 0.02 massive 62 gate 0.25 4301s
+step 15000 val 0.527 sinkfrac 0.00 anchorfrac 0.53 meanBOS 0.03 massive 61 gate 0.26 4610s
+step 16000 val 0.520 sinkfrac 0.00 anchorfrac 0.47 meanBOS 0.03 massive 60 gate 0.25 4918s
+step 17000 val 0.515 sinkfrac 0.00 anchorfrac 0.47 meanBOS 0.03 massive 61 gate 0.25 5226s
+step 18000 val 0.511 sinkfrac 0.00 anchorfrac 0.47 meanBOS 0.03 massive 61 gate 0.25 5534s
+step 19000 val 0.508 sinkfrac 0.00 anchorfrac 0.47 meanBOS 0.03 massive 59 gate 0.25 5769s
+step 20000 val 0.506 sinkfrac 0.00 anchorfrac 0.47 meanBOS 0.03 massive 59 gate 0.25 5915s
