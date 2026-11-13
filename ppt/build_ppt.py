@@ -18,6 +18,9 @@ from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.opc.constants import RELATIONSHIP_TYPE as RT
+from pptx.opc.package import Part
+from pptx.oxml import parse_xml
 from pptx.oxml.ns import qn
 from pptx.util import Inches, Pt
 from pygments.lexers import PythonLexer
@@ -67,9 +70,37 @@ def eq_png(latex, size=16, color=INK, width_in=None, bold=False, sans=False):
         if r.returncode:
             raise RuntimeError(f"LaTeX failed for {latex!r}:\n" + r.stdout[-1500:])
         subprocess.run(["pdftocairo", "-png", "-r", "600", "-transp", "-singlefile", pdf, png[:-4]], check=True)
+    to_svg(pdf)
     info = subprocess.run(["pdfinfo", pdf], capture_output=True, text=True).stdout
     w, h = map(float, re.search(r"Page size:\s+([\d.]+) x ([\d.]+)", info).groups())
     return png, w / 72, h / 72
+
+
+def to_svg(pdf):
+    """Vector copy of a one-page PDF (same basename, .svg)."""
+    svg = pdf[:-4] + ".svg"
+    if not os.path.exists(svg):
+        subprocess.run(["pdftocairo", "-svg", pdf, svg], check=True)
+    return svg
+
+
+def picture(slide, png, x, y, w=None, h=None, svg=None):
+    """Insert `png`; if `svg` is given, attach it as the vector version (Office 2016+ shows and exports the
+    SVG and keeps the PNG as fallback), so PowerPoint's PDF export does not blur it."""
+    pic = slide.shapes.add_picture(png, Inches(x), Inches(y), None if w is None else Inches(w),
+                                   None if h is None else Inches(h))
+    if svg:
+        pkg = slide.part.package
+        part = Part(pkg.next_partname("/ppt/media/vector%d.svg"), "image/svg+xml", pkg, open(svg, "rb").read())
+        rid = slide.part.relate_to(part, RT.IMAGE)
+        blip = pic._element.blipFill.find(qn("a:blip"))
+        blip.append(parse_xml(
+            '<a:extLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+            '<a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">'
+            '<asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" '
+            'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
+            f'r:embed="{rid}"/></a:ext></a:extLst>'))
+    return pic
 
 
 def eq(slide, x, y, latex, size=16, color=INK, width_in=None, anchor="tl", bold=False, sans=False):
@@ -77,7 +108,7 @@ def eq(slide, x, y, latex, size=16, color=INK, width_in=None, anchor="tl", bold=
     png, w, h = eq_png(latex, size, color, width_in, bold, sans)
     if anchor == "c":
         x, y = x - w / 2, y - h / 2
-    slide.shapes.add_picture(png, Inches(x), Inches(y), Inches(w), Inches(h))
+    picture(slide, png, x, y, w, h, svg=to_svg(png[:-4] + ".pdf"))
     return w, h
 
 
@@ -135,6 +166,8 @@ def arrow(slide, x0, y0, x1, y1):
     c.line.width = Pt(1.5)
     ln = c.line._get_or_add_ln()
     ln.append(ln.makeelement(qn("a:tailEnd"), {"type": "triangle"}))
+    # no theme effect (its shadow makes PowerPoint rasterise the arrow in the PDF export)
+    c._element.spPr.append(c._element.spPr.makeelement(qn("a:effectLst"), {}))
 
 
 def stat_card(slide, x, y, w, h, value, caption, accent, vsize=24):
@@ -485,7 +518,10 @@ def slide_results(s):
     fig = os.path.join(ASSETS, "fig_race")
     subprocess.run(["pdftoppm", "-png", "-r", "250", "-singlefile",
                     os.path.join(ROOT, "report", "figures", "fig_race.pdf"), fig], check=True)
-    s.shapes.add_picture(fig + ".png", Inches(0.6), Inches(2.62), width=Inches(7.6))
+    src_pdf = os.path.join(ROOT, "report", "figures", "fig_race.pdf")
+    svg = fig + ".svg"
+    subprocess.run(["pdftocairo", "-svg", src_pdf, svg], check=True)
+    picture(s, fig + ".png", 0.6, 2.62, w=7.6, svg=svg)
     rows = [("4 layers × 4 heads, 3 seeds", "sink heads", "steps")]
     for tag, lab in [("ctl_base_lam1", "baseline, λ = 1"), ("ctl_lam10", "gate lr ×10"),
                      ("ctl_lam10_qk10", "gate ×10 and Q/K ×10"), ("ctl_lr1e-3", "all learning rates ×10")]:
