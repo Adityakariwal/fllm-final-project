@@ -1,7 +1,7 @@
 # Racing to the Sink: Why Gated Attention Still Forms Attention Sinks, and What Decides the Race
 
 End-term project for **Foundations of Large Language Models**, Group **G28**:
-Aditya Kariwal, Manish Kundu, Samyak Sheersh.
+Aditya Kariwal (23MA10003), Manish Kundu (23MA10032), Samyak Sheersh (22EC39026).
 
 Report: [`report/main.pdf`](report/main.pdf) (ICLR 2025 template).
 
