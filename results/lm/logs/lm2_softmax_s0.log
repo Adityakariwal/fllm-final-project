@@ -1,0 +1,22 @@
+256006 train / 10304 valid stories, vocab 92, train tokens 205,942,255, sample=random
+step     0 val 4.571 sinkfrac 0.00 anchorfrac 0.00 meanBOS 0.02 massive 8 6s
+step  1000 val 0.824 sinkfrac 0.00 anchorfrac 0.36 meanBOS 0.03 massive 43 281s
+step  2000 val 0.714 sinkfrac 0.00 anchorfrac 0.33 meanBOS 0.04 massive 71 566s
+step  3000 val 0.671 sinkfrac 0.00 anchorfrac 0.33 meanBOS 0.04 massive 87 851s
+step  4000 val 0.649 sinkfrac 0.00 anchorfrac 0.33 meanBOS 0.04 massive 94 1135s
+step  5000 val 0.633 sinkfrac 0.00 anchorfrac 0.31 meanBOS 0.04 massive 96 1419s
+step  6000 val 0.619 sinkfrac 0.00 anchorfrac 0.31 meanBOS 0.04 massive 94 1703s
+step  7000 val 0.611 sinkfrac 0.00 anchorfrac 0.33 meanBOS 0.04 massive 94 1988s
+step  8000 val 0.600 sinkfrac 0.00 anchorfrac 0.31 meanBOS 0.05 massive 95 2272s
+step  9000 val 0.591 sinkfrac 0.00 anchorfrac 0.31 meanBOS 0.05 massive 96 2557s
+step 10000 val 0.583 sinkfrac 0.00 anchorfrac 0.28 meanBOS 0.05 massive 93 2841s
+step 11000 val 0.573 sinkfrac 0.00 anchorfrac 0.25 meanBOS 0.05 massive 89 3125s
+step 12000 val 0.565 sinkfrac 0.00 anchorfrac 0.28 meanBOS 0.05 massive 89 3407s
+step 13000 val 0.557 sinkfrac 0.00 anchorfrac 0.25 meanBOS 0.05 massive 87 3691s
+step 14000 val 0.550 sinkfrac 0.00 anchorfrac 0.25 meanBOS 0.05 massive 85 3974s
+step 15000 val 0.543 sinkfrac 0.00 anchorfrac 0.25 meanBOS 0.05 massive 84 4258s
+step 16000 val 0.537 sinkfrac 0.00 anchorfrac 0.25 meanBOS 0.05 massive 81 4542s
+step 17000 val 0.530 sinkfrac 0.00 anchorfrac 0.25 meanBOS 0.05 massive 79 4825s
+step 18000 val 0.525 sinkfrac 0.00 anchorfrac 0.25 meanBOS 0.05 massive 79 5109s
+step 19000 val 0.523 sinkfrac 0.00 anchorfrac 0.25 meanBOS 0.05 massive 76 5393s
+step 20000 val 0.520 sinkfrac 0.00 anchorfrac 0.25 meanBOS 0.05 massive 75 5677s

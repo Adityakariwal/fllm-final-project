@@ -45,7 +45,8 @@ $\lambda^*$, grows like $\sqrt{d_h}$ with head width (fitted exponent $0.55$); t
 about $5\times$ larger than predicted. Two predictions fail, and we report them: plain SGD does not remove sinks, and in 4-layer models
 $\lambda^*$ is almost width-independent. Controls make the race causal: speeding up the query/key weights
 restores every sink even when the gate is fast, while a $10\times$ faster gate alone removes all sinks in a
-4-layer model. \todo{LM sentence.}
+4-layer model. In small character-level language models trained for up to 20k steps no attention sink forms
+in any variant, so the language-model evidence is inconclusive.
 \end{abstract}
 
 \section{Introduction}
@@ -80,8 +81,9 @@ setting of the original paper, where every quantity can be measured and controll
         a shared log-error budget, invariance to the base learning rate and a $\sqrt{d_h}$ law for the critical
         multiplier. All three hold, the last up to a constant factor of about 5. We also
         report the predictions that fail.
-  \item We evaluate \textbf{gate parameterisations} motivated by the theory (\cref{sec:fix}) and test the
-        findings on a \textbf{small language model} (\cref{sec:lm}).
+  \item We evaluate \textbf{gate parameterisations} motivated by the theory (\cref{sec:fix}). We also train
+        \textbf{small language models} (\cref{sec:lm}). No sink formed in them within our budget, so they do
+        not yet test the race.
 \end{enumerate}
 
 \section{Background and related work}
@@ -500,7 +502,16 @@ none at all at $\lambda=10$ ($0.97\times$) or with the race-matched gate ($1.01\
 follows the same order (0.15, 0.14, 0.13, 0.08, 0.07). Faster gates cost a little language-modelling loss
 (0.390 for softmax and $\lambda=1$ vs.\ 0.393 and 0.397 nats/char) at this short training length.
 
-\todo{Run 2 (packed random-offset chunks, 20k steps, lr $2\times10^{-3}$): results.}
+\textbf{Run 2} (packed chunks from random offsets, as in standard pre-training; 20k steps, learning rate
+$2\times10^{-3}$, 1 seed; \cref{fig:lm2} in \cref{app:more}) was designed to make sinks form, but still has
+none: the strongest \bos{} head reaches 0.33 (softmax), 0.27 (gate, $\lambda=10$), 0.18 ($\lambda=1$) and 0.11
+(off-by-one). The \bos{} activation outlier is now similar in all variants ($1.26$--$1.33\times$), so the
+ordering seen in run 1 does not hold under packed training. Many heads in every variant put almost all of their
+attention on a single key (up to 0.99), but we did not record which key, and in a character-level model such
+heads may simply be previous-character heads. Gating slightly \emph{improves} the loss here (0.506 at
+$\lambda=1$ vs.\ 0.520 for softmax, one seed), in line with \citet{qiu2025gated}. Overall, at this scale and
+training length the language model does not test the race. Whether a fast gate removes sinks once they form in
+real language models remains open.
 
 \begin{figure}[t]
 \centering
@@ -533,7 +544,8 @@ rate when sink-free behaviour is desired.
   \item The constructions are existence results, not a characterisation of all solutions.
   \item The race theory is a first-order sign-Adam argument. It predicts the budget and the learning-rate
         invariance well, but it gets the size of $\lambda^*$ wrong by a factor of 4--5 and fails for SGD.
-  \item The language-model experiment is small (\cref{sec:lm}).
+  \item The language models are small and no sink formed in them within 20k steps (\cref{sec:lm}), so the
+        race is established on the synthetic task only.
   \item Some numbers differ slightly between CPU and GPU runs of the same seed. All the controls in
         \cref{tab:controls,tab:glr} are compared within one device.
 \end{itemize}
@@ -548,7 +560,7 @@ breaks down. Removing the anchor, adding depth, or giving the gate a large enoug
 shifts the race towards the gate.
 
 \paragraph{Code.} All code, configurations and raw results are included with this submission
-\todo{(repository URL)}. Every number and figure can be regenerated with \texttt{reproduce.sh}, and
+(\url{https://github.com/Adityakariwal/fllm-final-project}). Every number and figure can be regenerated with \texttt{reproduce.sh}, and
 \texttt{src/summarize.py} recomputes every table entry from the raw results.
 
 \bibliography{references}
@@ -584,8 +596,8 @@ training is unaffected.
 
 \textbf{Compute.} Single-layer and shallow sweeps ran on a laptop CPU. Deeper sweeps of the original study
 ran on Kaggle ($2\times$ NVIDIA T4). The race sweeps of \cref{sec:race,sec:theory,sec:fix} ran on 11 CPU
-cores, and the language model on Kaggle T4s. In total we trained 554 models (312 in the original study,
-232 in the race sweeps, 10 language models), plus 6 probe runs.
+cores, and the language models on Kaggle T4s. In total we trained 558 models (312 in the original study,
+232 in the race sweeps, 14 language models), plus 6 probe runs.
 
 \section{Additional results}
 \label{app:more}
@@ -639,6 +651,15 @@ $\lambda$ & BOS mass & Gate off/trig. & Steps & Sink heads & Gate off/trig. & St
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_lm2.pdf}
+\caption{Language model, run 2 (packed random-offset chunks, 20k steps, 1 seed). (a) \bos{} activation outlier
+per layer, (b) attention of the most \bos{}-focused head, (c) validation loss. No sink forms, and the variants
+no longer differ in the \bos{} outlier.}
+\label{fig:lm2}
+\end{figure}
 
 \textbf{Sink heads by depth} (5 seeds, 4 heads per layer, sink head: \bos{} mass $>0.6$):
 \begin{center}

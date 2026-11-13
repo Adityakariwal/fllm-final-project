@@ -88,6 +88,7 @@ experiments() {
   #   python kaggle/build_kernel.py --slug sinks-race-lm --jobs-file kaggle/jobs_lm.txt --user <you>
   #   kaggle kernels push -p kaggle/build/sinks-race-lm --accelerator NvidiaTeslaT4
   #   kaggle kernels output <you>/sinks-race-lm -p kaggle/out/sinks-race-lm   # -> copy results/ to results/lm
+  #   run 2 (packed chunks, 20k steps): same with --slug sinks-race-lm2 --jobs-file kaggle/jobs_lm2.txt
   # or locally on a GPU, e.g.:
   #   $PY src/lm.py --attn gated --gate_kind scaled --seed 0 --out results/lm/lm_gated_scaled_s0.json
 }

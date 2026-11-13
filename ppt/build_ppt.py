@@ -448,13 +448,13 @@ def slide_results(s):
     remove(body(s))
     real, slope, offset = race_numbers()
     c = S["ctl_lam10"], S["ctl_lam10_qk10"]
-    lmA, lmB = S["lm_softmax"]["bos_act_ratio"], S["lm_gated_lam10"]["bos_act_ratio"]
+    lr = [S[k]["mean_bos"] for k in ("lr3e-5_lam16", "dh16_lam16", "lr3e-4_lam16")]
     cards = [(f"{c[0]['sinks']}/{c[0]['heads']} → {c[1]['sinks']}/{c[1]['heads']}",
               "sink heads with gate lr ×10, then also Q/K lr ×10: the race is causal", BLUE),
              (f"r = {S['budget']['corr']:.2f}",
               f"shared log-budget: s* + (−z*) = {S['budget']['mean']:.1f} ± {S['budget']['sd']:.1f}", GREEN),
              (f"slope {slope:.2f}", f"λ* ∝ √d_h (theory 0.5); constant ×{offset:.1f}", VIOLET),
-             (f"{lmA:.2f}× → {lmB:.2f}×", "LM: BOS activation outlier, softmax → gate λ = 10", ORANGE)]
+             (" · ".join(f"{v:.2f}" for v in lr), "BOS mass at λ = 16 for base lr 3e-5 / 1e-4 / 3e-4: identical", ORANGE)]
     for k, (v, cap, col) in enumerate(cards):
         stat_card(s, 0.6 + k * 3.08, 1.2, 2.92, 1.22, v, cap, col)
     os.makedirs(ASSETS, exist_ok=True)
@@ -473,8 +473,9 @@ def slide_results(s):
                                           "every depth and gate init, though a sink-free solution exists.", False)],
         [("What fails.  ", True, ORANGE), ("SGD still forms sinks; at 4 layers λ* hardly depends on width, so "
                                             "the √d_h gate fails at d_h = 4.", False)],
-        [("Limitations.  ", True, MUTED), ("Synthetic task; first-order theory (constant off by ~5×); "
-                                           "small LM in which sinks had not yet formed.", False)],
+        [("Limitations.  ", True, MUTED), ("Synthetic task; first-order theory (constant off by ~5×); our "
+                                           "small LMs formed no sinks in 20k steps, so the LM test is open.",
+                                           False)],
         [("Conclusion.  ", True, NAVY), ("An off switch makes sinks unnecessary but not absent: the gate must "
                                          "also learn fast enough. Its learning rate decides the race.", False)],
     ], size=13, space=10)

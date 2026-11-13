@@ -21,7 +21,7 @@ controlled setting, using our own implementation (not the authors' code).
 | A race | The sink logit (a product q.k) grows ~t^2, the gate logit ~t. Speeding up only the gate (x10) removes every sink in a 4-layer model; speeding up W_Q, W_K as well brings every sink back; a x10 larger learning rate overall keeps the sinks. |
 | Theory | A sign-Adam model of the race predicts (P1) a shared log-budget s* + (-z*) = const, (P2) no dependence on the base learning rate, (P3) a critical gate multiplier lambda* ~ sqrt(d_head). P1 (8.8 +- 1.8, r = -0.83) and P2 hold; P3 holds with slope 0.55 but a constant ~5x larger than predicted. SGD and 4-layer width-dependence are where it fails. |
 | Gate designs | A sqrt(d_head)-scaled "race-matched" gate is sink-free at d_head = 16/64 and 8 layers, but not at d_head = 4; a bilinear gate gives partial sinks, as predicted. |
-| Language model | Small char-level GPT on TinyStories (`src/lm.py`, Kaggle T4): see report Sec. 9. |
+| Language model | Small char-level GPTs on TinyStories (`src/lm.py`, Kaggle T4; 8k steps x 2 seeds and 20k packed steps): no attention sink forms in any variant, so the LM does not yet test the race (report Sec. 9). |
 
 ## Repository layout
 
