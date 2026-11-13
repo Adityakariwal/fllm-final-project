@@ -5,7 +5,7 @@
 Maths is typeset with LaTeX (same fonts as the report) and inserted as transparent 600-dpi images; code is
 syntax-coloured with pygments; every number is read from results/summary.json (python src/summarize.py).
 Needs: python-pptx, pygments, pdflatex + pdftocairo (TeX Live / poppler).
-Environment: ROLLS="..." for the roll numbers on the title slide.
+Environment: ROLLS="..." overrides the roll numbers on the title slide.
 """
 import hashlib
 import json
@@ -29,7 +29,7 @@ TEMPLATE = os.path.join(ROOT, "ppt", "Project_Presentation_Template.pptx")
 OUT = os.path.join(ROOT, "ppt", "G28_presentation.pptx")
 ASSETS = os.path.join(ROOT, "ppt", "assets")
 S = json.load(open(os.path.join(ROOT, "results", "summary.json")))
-ROLLS = os.environ.get("ROLLS", "[roll numbers]")
+ROLLS = os.environ.get("ROLLS", "23MA10003, 23MA10032, 22EC39026")  # same order as the names
 
 
 def rgb(h):
@@ -42,7 +42,7 @@ TINT = {BLUE: "EAF2FC", GREEN: "E6F6EF", ORANGE: "FDEFE8", VIOLET: "EEECFB", NAV
 
 
 # ============================================================================ LaTeX equations
-def eq_png(latex, size=16, color=INK, width_in=None, bold=False):
+def eq_png(latex, size=16, color=INK, width_in=None, bold=False, sans=False):
     """Typeset `latex` (math if no width_in, else a text paragraph of that width) -> (png, w_in, h_in)."""
     body = latex if width_in else f"$\\displaystyle {latex}$"
     if bold:
@@ -50,6 +50,8 @@ def eq_png(latex, size=16, color=INK, width_in=None, bold=False):
     opts = f"border=1.5pt,varwidth={width_in}in" if width_in else "border=1.5pt"
     src = (f"\\documentclass[{opts}]{{standalone}}\n"
            "\\usepackage{amsmath,amssymb,bm,times,anyfontsize}\n\\usepackage{xcolor}\n"
+           + ("\\usepackage[scaled=0.92]{helvet}\\renewcommand{\\familydefault}{\\sfdefault}\n" if sans else "")
+           +
            "\\begin{document}\n"
            f"\\fontsize{{{size}}}{{{size * 1.3:.1f}}}\\selectfont\\color[HTML]{{{color}}}{body}\n"
            "\\end{document}\n")
@@ -70,9 +72,9 @@ def eq_png(latex, size=16, color=INK, width_in=None, bold=False):
     return png, w / 72, h / 72
 
 
-def eq(slide, x, y, latex, size=16, color=INK, width_in=None, anchor="tl", bold=False):
+def eq(slide, x, y, latex, size=16, color=INK, width_in=None, anchor="tl", bold=False, sans=False):
     """Place an equation at (x, y) [inches]; anchor 'tl' = top-left, 'c' = centre. Returns (w, h)."""
-    png, w, h = eq_png(latex, size, color, width_in, bold)
+    png, w, h = eq_png(latex, size, color, width_in, bold, sans)
     if anchor == "c":
         x, y = x - w / 2, y - h / 2
     slide.shapes.add_picture(png, Inches(x), Inches(y), Inches(w), Inches(h))
@@ -291,27 +293,40 @@ def slide_problem(s):
             rect(s, x - 0.25, y2, BW + 0.5, BH, fill=TINT[ORANGE], line=ORANGE)
             eq(s, x + BW / 2, y2 + BH / 2, r"\mathrm{mean}(x_{1..j})", size=13, anchor="c")
     text(s, X0, y2 + BH + 0.12, 6.0, 0.35,
-         "the trigger sits at a random position j; every token carries 13 random content features",
+         "the trigger sits at a random position j; tokens carry 13 random features",
          size=11.5, color=MUTED)
     # task equations
     eq(s, 8.0, 1.3, r"y^{(i)}=\begin{cases}\dfrac{1}{j}\sum_{k=1}^{j}x^{(k)} & i=j\quad(\text{trigger})\\[6pt]"
                     r"\;0 & i\neq j\quad(\text{no-op})\end{cases}", size=17)
     eq(s, 8.0, 2.72, r"\mathcal{L}(f)=\max_i\big\|y^{(i)}-f(x)^{(i)}\big\|_\infty<5\cdot10^{-3}", size=15)
     # theorem callout
-    callout(s, 0.6, 3.5, 12.2, 1.18, BLUE)
-    text(s, 0.85, 3.57, 4.0, 0.38, [[("Theorem (Ran-Milo, 2026)", True, BLUE)]], size=14)
-    eq(s, 0.85, 4.0, r"\mathcal{L}(f)\le\eta\;\Longrightarrow\;\alpha_{i,\textsc{bos}}\ge 1-\varepsilon"
+    callout(s, 0.6, 3.3, 12.2, 1.02, BLUE)
+    text(s, 0.85, 3.35, 4.0, 0.38, [[("Theorem (Ran-Milo, 2026)", True, BLUE)]], size=14)
+    eq(s, 0.85, 3.76, r"\mathcal{L}(f)\le\eta\;\Longrightarrow\;\alpha_{i,\textsc{bos}}\ge 1-\varepsilon"
                      r"\ \text{ at every non-trigger row } i", size=16)
-    text(s, 7.7, 3.62, 4.95, 1.0,
+    text(s, 7.7, 3.4, 4.95, 0.9,
          ["A softmax model needs an attention sink to do nothing; ReLU attention does not.",
           [("The paper's remedy: gating or un-normalised attention.", True)]], size=13)
     # our question
-    callout(s, 0.6, 4.88, 12.2, 1.18, ORANGE)
-    text(s, 0.85, 4.95, 4.0, 0.38, [[("Our question", True, ORANGE)]], size=14)
-    text(s, 0.85, 5.35, 11.8, 0.7,
+    callout(s, 0.6, 4.45, 12.2, 0.98, ORANGE)
+    text(s, 0.85, 4.5, 4.0, 0.38, [[("Our question", True, ORANGE)]], size=14)
+    text(s, 0.85, 4.86, 11.8, 0.6,
          "A gated head can output zero without any sink (we construct one). Does training actually use the "
          "gate? If not, what decides which way a head switches off, and can we control it?", size=14)
-    text(s, 0.6, 6.3, 12.2, 0.6,
+    # input -> process -> output
+    ipo = [(r"\textbf{Input}\enspace sequence $x\in\mathbb{R}^{16\times16}$: \textsc{bos}, one trigger, "
+            r"content tokens", NAVY),
+           (r"\textbf{Process}\enspace $D$-layer attention-only transformer, Adam on MSE until "
+            r"$\ell_\infty<5\cdot10^{-3}$", BLUE),
+           (r"\textbf{Output}\enspace $f(x)^{(i)}$ per position; we read attention $\alpha_{ik}$ and gates $g_i$",
+            GREEN)]
+    for k, (lab, col) in enumerate(ipo):
+        x = 0.6 + k * 4.15
+        rect(s, x, 5.6, 3.9, 0.66, fill=TINT[col], line=col, lw=1.25)
+        eq(s, x + 1.95, 5.93, lab, size=12, width_in=3.65, sans=True, anchor="c")
+        if k < 2:
+            arrow(s, x + 3.92, 5.93, x + 4.13, 5.93)
+    text(s, 0.6, 6.42, 12.2, 0.5,
          [[("Data pipeline.  ", True, MUTED), ("Synthetic task: 128 fresh sequences per step, generated on the "
                                               "fly.  Language model: TinyStories at character level, "
                                               "[BOS] + 255 characters per sample.", False, MUTED)]], size=12.5)
@@ -371,7 +386,7 @@ def slide_code(s):
     text(s, 0.6, 1.2, 12.2, 0.35,
          [[("Written from scratch in PyTorch.  ", True, MUTED),
            ("Excerpts of our contributions; full code in src/.", False, MUTED)]], size=13)
-    W, Z = 5.95, 12
+    W, Z = 5.95, 11
     yA = code_block(s, 0.6, 1.62, W, "src/sinks.py  ·  gate parameterisations", '''
 if gate_kind == "bilinear":           # z = A_h (B_h x) + b
     self.W_GB = nn.Linear(d, H * dh, bias=False)
@@ -396,20 +411,29 @@ groups = [
 opt = torch.optim.Adam(groups, betas=(0.9, 0.95))
 # stop when the l_inf error on a batch < 5e-3
 ''', size=Z)
-    y2 = max(yA, yB) + 0.3
-    code_block(s, 0.6, y2, W, "src/race_theory.py  ·  closed-form critical multiplier", '''
+    cap = lambda x, y, t: text(s, x, y + 0.04, W, 0.45, t, size=11, color=MUTED)
+    cap(0.6, yA, "Three gate types. The race-matched gate is the linear gate with a √d_h multiplier: "
+                 "same function at initialisation, κ× faster under Adam.")
+    cap(6.85, yB, "Separate learning rates for the sink route (W_Q, W_K) and the gate route (W_G): "
+                  "the interventions that make the race causal.")
+    y2 = max(yA, yB) + 0.62
+    yC = code_block(s, 0.6, y2, W, "src/race_theory.py  ·  closed-form critical multiplier", '''
 def lam_star(dh, i=8, eps=5e-3, vbar=1.0, a0=0.6):
     T = math.log(vbar * i / eps)       # shared budget T'
     S0 = math.log(i * a0 / (1 - a0))   # sink-head logit
     return (T - S0) * math.sqrt(dh) / (2 * math.sqrt(S0))
 ''', size=Z)
-    code_block(s, 6.85, y2, W, "src/probe.py  ·  zero-valued gradient probes", '''
+    yD = code_block(s, 6.85, y2, W, "src/probe.py  ·  zero-valued gradient probes", '''
 p_s = torch.zeros(H, requires_grad=True)  # BOS logit
 p_g = torch.zeros(H, requires_grad=True)  # gate logit
 layer.probe = (row_mask, p_s, p_g)        # non-trigger rows
 gs = torch.autograd.grad(loss, ps + pg)
 gate_pull = g / layer.dh                  # per coordinate
 ''', size=Z)
+    cap(0.6, yC, "Closed-form critical multiplier from the sign-Adam race; trained models follow √d_h "
+                 "with a ≈4.9× larger constant.")
+    cap(6.85, yD, "Zero-valued probes read which route the loss pulls on; dividing by d_h removes the "
+                  "16× summation artefact.")
 
 
 def slide_eval(s):
